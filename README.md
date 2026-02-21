@@ -138,10 +138,6 @@ Crear-Noticias/
 4. Push al branch (`git push origin feature/nueva-funcionalidad`)
 5. Abrir Pull Request
 
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
-
 ## 👨‍💻 Autor
 
 **[Facundo Brites]** - *Desarrollador Web* - [GitHub Profile](https://github.com/FacuX23)
