@@ -148,7 +148,7 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 ## 🙏 Agradecimientos
 
-- **GSAP** por las increíbles animaciones
+- **GSAP** por las increíbles animaciones (Creaditos a https://github.com/srdavo por compartir animaciones con GSAP)
 - **Lucide Icons** por la iconografía moderna
 - **La comunidad web** por inspiración y mejores prácticas
 
