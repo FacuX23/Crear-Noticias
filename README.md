@@ -62,8 +62,8 @@ El proyecto está optimizado para:
 
 1. **Clonar el repositorio**
 ```bash
-git clone https://github.com/[tu-usuario]/escuela-crear.git
-cd escuela-crear
+git clone https://github.com/FacuX23/Crear-Noticias
+cd Crear-Noticias
 ```
 
 2. **Configurar servidor local**
@@ -144,7 +144,7 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 ## 👨‍💻 Autor
 
-**[Tu Nombre]** - *Desarrollador Web* - [GitHub Profile](https://github.com/[tu-usuario])
+**[Facundo Brites]** - *Desarrollador Web* - [GitHub Profile](https://github.com/FacuX23)
 
 ## 🙏 Agradecimientos
 
@@ -154,4 +154,3 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 ---
 
-**Escuela Crear** - Donde la tecnología encuentra la educación 🎓✨
