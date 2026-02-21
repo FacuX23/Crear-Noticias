@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Escuela Crear</title>
+    <link rel="stylesheet" href="/Crear-Noticias/Panel/styles.css">
+</head>
+<body>
+    <div class="mobile-top-nav" aria-label="Navegación">
+        <button class="mobile-top-item active" data-tab="noticias" type="button">
+            <svg class="mobile-nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+                <path d="M18 14h-8"></path>
+                <path d="M15 18h-5"></path>
+                <path d="M10 6h8v4h-8V6Z"></path>
+            </svg>
+            <span>Noticias</span>
+        </button>
+        <button class="mobile-top-item" data-tab="eventos" type="button">
+            <svg class="mobile-nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <path d="M8 14h.01"></path>
+                <path d="M12 14h.01"></path>
+                <path d="M16 14h.01"></path>
+                <path d="M8 18h.01"></path>
+                <path d="M12 18h.01"></path>
+                <path d="M16 18h.01"></path>
+            </svg>
+            <span>Eventos</span>
+        </button>
+        <a href="/Crear-Noticias/index.html" class="mobile-top-item" style="text-decoration: none;">
+            <svg class="mobile-nav-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <span>Inicio</span>
+        </a>
+    </div>
+
+    <div class="mobile-bottom-nav" aria-label="Opciones">
+        <button class="mobile-bottom-item" data-tab="usuarios" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+            <span>Usuarios</span>
+        </button>
+        <button class="mobile-bottom-item" type="button" id="accountBtnMobile" onclick="openAccountModal(this)">
+            <svg class="mobile-nav-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Cuenta</span>
+        </button>
+        <button class="mobile-bottom-item mobile-bottom-logout" type="button" id="logoutBtnMobile">
+            <svg class="mobile-nav-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+            <span>Salir</span>
+        </button>
+    </div>
+
+    <!-- Main Panel -->
+    <div id="panelContent" class="panel-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">
+                        <span class="logo-letter">C</span>
+                    </div>
+                    <span class="sidebar-logo-text">Panel Crear</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <h2 class="sidebar-title2">Menu</h2>
+                <button class="sidebar-nav-item active ripple_effect" data-tab="noticias">
+                    <svg class="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+                        <path d="M18 14h-8"></path>
+                        <path d="M15 18h-5"></path>
+                        <path d="M10 6h8v4h-8V6Z"></path>
+                    </svg>
+                    <span>Noticias</span>
+                </button>
+                <button class="sidebar-nav-item ripple_effect" data-tab="eventos">
+                    <svg class="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                        <path d="M8 14h.01"></path>
+                        <path d="M12 14h.01"></path>
+                        <path d="M16 14h.01"></path>
+                        <path d="M8 18h.01"></path>
+                        <path d="M12 18h.01"></path>
+                        <path d="M16 18h.01"></path>
+                    </svg>
+                    <span>Eventos</span>
+                </button>
+                <a href="/Crear-Noticias/index.html" style="text-decoration: none;" class="sidebar-nav-item ripple_effect" data-tab="home">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house w-5 h-5"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                    <span>Volver al inicio</span>
+                </a>
+                
+                <h2 class="sidebar-title">Opciones</h2>
+                
+                <button class="sidebar-nav-item ripple_effect" data-tab="usuarios">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+                    <span>Usuarios</span>
+                </button>   
+                
+                <button class="sidebar-nav-item ripple_effect" data-tab="account" id="accountBtn" onclick="openAccountModal(this)">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user w-5 h-5"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>Cuenta</span>
+                </button>
+                
+                <button class="sidebar-nav-item ripple_effect" id="logoutBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out w-5 h-5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+                    <span>Cerrar sesión</span>
+                </button>
+                
+                <!-- <div class="sidebar-nav-divider"></div>
+                
+                <button class="sidebar-account-btn" id="accountBtn">
+                    <div class="account-avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="account-info">
+                        <div class="account-name" id="userName">Usuario</div>
+                        <div class="account-email" id="userEmail">email@ejemplo.com</div>
+                    </div>
+                </button>
+                <button class="sidebar-logout-btn" id="logoutBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Cerrar Sesión
+                </button> -->
+            </nav>
+
+            <div class="sidebar-footer">
+            </div>
+        </aside>
+
+        <!-- Modal de Cuenta -->
+        <div id="accountModal" class="modal-overlay">
+            <div class="modal-backdrop" onclick="closeAccountModal()"></div>
+            
+            <div class="modal-container" onclick="event.stopPropagation()">
+                <!-- Close Button -->
+                <button class="modal-close-btn" onclick="closeAccountModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+
+                <!-- Content -->
+                <div class="modal-content">
+                    <!-- Header -->
+                    <div class="modal-header">
+                        <div class="modal-icon-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="modal-title">Mi Cuenta</h2>
+                            <p class="modal-subtitle">Gestiona tu información personal</p>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <div class="modal-form">
+                        <!-- Email (read-only) -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                </svg>
+                                Correo electrónico
+                            </label>
+                            <div class="form-input-readonly" id="userEmail">usuario@ejemplo.com</div>
+                            <p class="form-hint">Este campo no se puede modificar</p>
+                        </div>
+
+                        <!-- Username (editable) -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                Nombre
+                            </label>
+                            <input
+                                type="text"
+                                id="nombreUsuario"
+                                class="form-input"
+                                placeholder="Ingresa tu nombre de usuario"
+                            />
+                            <p class="form-hint">Este nombre aparecerá en tus publicaciones</p>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="modal-buttons">
+                        <button class="btn-cancel" onclick="closeAccountModal()">
+                            Cancelar
+                        </button>
+                        <button class="btn-save" onclick="saveAccountChanges()">
+                            <svg id="saveSpinner" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                                <line x1="12" y1="2" x2="12" y2="6"></line>
+                                <line x1="12" y1="18" x2="12" y2="22"></line>
+                                <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+                                <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+                                <line x1="2" y1="12" x2="6" y2="12"></line>
+                                <line x1="18" y1="12" x2="22" y2="12"></line>
+                                <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+                                <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+                            </svg>
+                            Guardar cambios
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main class="main-content">
+            <div class="content-wrapper">
+                <div class="content-header">
+                    <h1 class="content-title" id="contentTitle">Gestión de Noticias</h1>
+                    <p class="content-subtitle" id="contentSubtitle">Bienvenido</p>
+                </div>
+
+                <button id="addBtn" class="add-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span id="addBtnText">Agregar Noticia</span>
+                </button>
+
+                <div id="usersSection" style="display: none;">
+                    <div class="form-card" style="margin-bottom: 16px;">
+                        <h2 class="form-title">Crear Usuario</h2>
+
+                        <form id="usersCreateForm" class="form-content">
+                            <div class="form-group">
+                                <label class="form-label">Usuario</label>
+                                <input type="text" id="userNuevoUsuario" class="form-input" placeholder="Ej: Jaun" autocomplete="username">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Correo electrónico</label>
+                                <input type="email" id="userNuevoEmail" class="form-input" placeholder="correo@ejemplo.com" autocomplete="email">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Contraseña</label>
+                                <input type="password" id="userNuevoPassword" class="form-input" placeholder="Contraseña" autocomplete="new-password">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Rol</label>
+                                <select id="userNuevoRol" class="form-input" style="height: 3rem;
+                                border: none;
+                                border-right: solid transparent 16px;
+                                box-shadow: 0 0 0 1px #e5e8ed;">
+                                    <option value="alumno">Alumno</option>
+                                    <option value="profesor">Profesor</option>
+                                    <option value="director">Director</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Ciclo lectivo</label>
+                                <input type="number" id="userNuevoCiclo" class="form-input" placeholder="Ej: 2026">
+                            </div>
+
+                            <div id="usersMessage" class="form-hint" style="display: none;"></div>
+
+                            <div class="form-buttons">
+                                <button id="userCancelBtn" class="btn-secondary" type="button">Limpiar</button>
+                                <button id="userCreateBtn" class="btn-primary" type="button">Crear</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="usersList" class="users-accordion">
+                        <div class="users-accordion-section" data-accordion-section="directores">
+                            <div class="users-accordion-header" data-accordion-toggle="directores">
+                                <div class="users-accordion-title">Directores</div>
+                                <div class="users-accordion-right">
+                                    <svg class="users-accordion-chevron" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                </div>
+                            </div>
+                            <div class="users-accordion-body" data-accordion-body="directores">
+                                <div id="usersDirectoresList" class="users-accordion-list"></div>
+                            </div>
+                        </div>
+
+                        <div class="users-accordion-section" data-accordion-section="profesores">
+                            <div class="users-accordion-header" data-accordion-toggle="profesores">
+                                <div class="users-accordion-title">Profesores</div>
+                                <div class="users-accordion-right">
+                                    <svg class="users-accordion-chevron" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                </div>
+                            </div>
+                            <div class="users-accordion-body" data-accordion-body="profesores">
+                                <div id="usersProfesoresList" class="users-accordion-list"></div>
+                            </div>
+                        </div>
+
+                        <div class="users-accordion-section" data-accordion-section="alumnos">
+                            <div class="users-accordion-header" data-accordion-toggle="alumnos">
+                                <div class="users-accordion-title">Alumnos</div>
+                                <div class="users-accordion-right">
+                                    <button type="button" id="usersVaciarAlumnosBtn" class="users-accordion-action users-clear-btn">Vaciar Lista</button>
+                                    <svg class="users-accordion-chevron" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                </div>
+                            </div>
+                            <div class="users-accordion-body" data-accordion-body="alumnos">
+                                <div id="usersAlumnosList" class="users-accordion-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="formContainer" class="modal-overlay">
+                    <div class="modal-backdrop" onclick="closeForm()"></div>
+                    <div class="modal-container form-modal-container" onclick="event.stopPropagation()">
+                        <div class="form-card">
+                            <h2 class="form-title" id="formTitle">Nueva Noticia</h2>
+                            
+                            <div class="form-content">
+                            <!-- Título -->
+                            <div class="form-group">
+                                <label class="form-label">Título</label>
+                                <input type="text" id="inputTitulo" class="form-input" placeholder="Título...">
+                            </div>
+
+                            <!-- Contenido/Descripción -->
+                            <div class="form-group">
+                                <label class="form-label" id="labelContenido">Contenido</label>
+                                <textarea id="inputContenido" class="form-textarea" rows="4" placeholder="Escribe aquí..."></textarea>
+                            </div>
+
+                            <!-- Campos de Evento (ocultos por defecto) -->
+                            <div id="eventoFields" class="evento-fields" style="display: none;">
+                                <div class="form-group">
+                                    <label class="form-label">Fecha</label>
+                                    <input type="date" id="inputFecha" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Hora</label>
+                                    <input type="time" id="inputHora" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Lugar</label>
+                                    <input type="text" id="inputLugar" class="form-input" placeholder="Lugar del evento...">
+                                </div>
+                            </div>
+
+                            <!-- Media Upload -->
+                            <div class="form-group">
+                                <label class="form-label">Media (opcional)</label>
+                                <div class="media-upload-grid">
+                                    <label class="media-upload-box" id="imageUploadBox">
+                                        <input type="file" id="inputImagen" accept="image/*" multiple style="display: none;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <circle cx="9" cy="9" r="2"></circle>
+                                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                                        </svg>
+                                        <span>Subir Imagen</span>
+                                    </label>
+                                    <label class="media-upload-box" id="videoUploadBox">
+                                        <input type="file" id="inputVideo" accept="video/*" multiple style="display: none;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                                        </svg>
+                                        <span>Subir Video</span>
+                                    </label>
+                                </div>
+                                <div id="uploadingIndicator" class="uploading-indicator" style="display: none;">
+                                    <svg class="spinner-small" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="2" x2="12" y2="6"></line>
+                                        <line x1="12" y1="18" x2="12" y2="22"></line>
+                                    </svg>
+                                    Subiendo archivo...
+                                </div>
+                                <div id="mediaPreview" class="media-preview" style="display: none;"></div>
+                            </div>
+
+                            <!-- Días de visibilidad -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; vertical-align: middle; margin-right: 4px;">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    Días de visibilidad
+                                </label>
+                                <input type="number" id="inputDias" class="form-input-small" min="1" max="365" value="30">
+                                <p class="form-hint" id="hintDias">Se eliminará automáticamente después de 30 días</p>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="form-buttons">
+                                <button id="cancelBtn" class="btn-secondary">Cancelar</button>
+                                <button id="saveBtn" class="btn-primary">
+                                    <span id="saveBtnText">Publicar</span>
+                                </button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="deleteModal" class="modal-overlay">
+                    <div class="modal-backdrop" onclick="closeDeleteModal()"></div>
+                    <div class="modal-container delete-modal-container" onclick="event.stopPropagation()">
+                        <div class="delete-modal-content">
+                            <div class="delete-modal-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/>
+                                    <path d="M12 9v4"/>
+                                    <path d="M12 17h.01"/>
+                                </svg>
+                            </div>
+                            <h2 class="delete-modal-title">Eliminar <span id="deleteModalTipo">tipo</span></h2>
+                            <p class="delete-modal-subtitle">Estas seguro de eliminar este/a "<span id="deleteModalTipo2">tipo</span>"</p>
+                            <div class="delete-modal-buttons">
+                                <button id="deleteCancelBtn" class="delete-btn-cancel" onclick="closeDeleteModal()">No</button>
+                                <button id="deleteConfirmBtn" class="delete-btn-confirm">Si</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="deleteUserModal" class="modal-overlay">
+                    <div class="modal-backdrop" onclick="closeDeleteUserModal()"></div>
+                    <div class="modal-container delete-modal-container" onclick="event.stopPropagation()">
+                        <div class="delete-modal-content">
+                            <div class="delete-modal-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/>
+                                    <path d="M12 9v4"/>
+                                    <path d="M12 17h.01"/>
+                                </svg>
+                            </div>
+                            <h2 class="delete-modal-title">Eliminar usuario</h2>
+                            <p class="delete-modal-subtitle">¿Eliminar este usuario permanentemente?</p>
+                            <div class="delete-modal-buttons">
+                                <button id="deleteUserCancelBtn" class="delete-btn-cancel" onclick="closeDeleteUserModal()">No</button>
+                                <button id="deleteUserConfirmBtn" class="delete-btn-confirm">Si</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="vaciarAlumnosModal" class="modal-overlay">
+                    <div class="modal-backdrop" onclick="closeVaciarAlumnosModal()"></div>
+                    <div class="modal-container delete-modal-container" onclick="event.stopPropagation()">
+                        <div class="delete-modal-content">
+                            <div class="delete-modal-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/>
+                                    <path d="M12 9v4"/>
+                                    <path d="M12 17h.01"/>
+                                </svg>
+                            </div>
+                            <h2 class="delete-modal-title">Vaciar lista</h2>
+                            <p class="delete-modal-subtitle">¿Vaciar la lista de alumnos? Esto eliminará todos los alumnos permanentemente.</p>
+                            <div class="delete-modal-buttons">
+                                <button id="vaciarAlumnosCancelBtn" class="delete-btn-cancel" onclick="closeVaciarAlumnosModal()">No</button>
+                                <button id="vaciarAlumnosConfirmBtn" class="delete-btn-confirm">Si</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items List -->
+                <div id="itemsList" class="items-list"></div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="/Crear-Noticias/Panel/panel.js"></script>  
+    <script src="/Crear-Noticias/header.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+
+    <!-- Modal de Login -->
+    <div id="loginModal" class="login-modal" style="display: none;">
+        <div class="login-backdrop"></div>
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h2 class="login-title">Acceso al Panel</h2>
+                    <p class="login-subtitle">Ingresá tus datos para continuar</p>
+                </div>
+                
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="loginEmail" class="form-label">Correo electrónico</label>
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="Tu correo"
+                            required
+                            autocomplete="email"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword" class="form-label">Contraseña</label>
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            name="password" 
+                            class="form-input" 
+                            placeholder="Tu contraseña"
+                            required
+                            autocomplete="current-password"
+                        >
+                    </div>
+                    
+                    <div id="loginError" class="login-error" style="display: none;"></div>
+                    
+                    <div class="login-actions">
+                        <button type="button" id="loginCancel" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" id="loginSubmit" class="btn btn-primary">
+                            <span id="loginButtonText">Ingresar</span>
+                            <div id="loginSpinner" class="login-spinner" style="display: none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="2" x2="12" y2="6"></line>
+                                    <line x1="12" y1="18" x2="12" y2="22"></line>
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const __hasGsap = typeof gsap !== 'undefined' && typeof Flip !== 'undefined' && typeof CustomEase !== 'undefined';
+        if (__hasGsap) {
+            gsap.registerPlugin(Flip, CustomEase);
+        }
+
+        const easeMain = __hasGsap ? CustomEase.create("custom", "M0,0 C0.308,0.19 0.107,0.633 0.288,0.866 0.382,0.987 0.656,1 1,1 ") : 'power2.out'
+        const closeEase1 = __hasGsap ? CustomEase.create("easeName", ".56,.27,0,1") : 'power2.inOut'
+        const closeEase2 = __hasGsap ? CustomEase.create("easeName", ".37,.35,0,1") : 'power2.inOut'
+
+        let accountOriginEl = null
+
+        function animateFullscreenOpenFromRect({ container, originEl, backdrop, originProps }) {
+            const rect = originEl.getBoundingClientRect()
+
+            // Medir el rect final (según CSS) ANTES de setear el estado inicial
+            // Esto permite animar desde el botón hacia un modal centrado (no fullscreen)
+            gsap.set(container, { clearProps: 'all' })
+            const finalRect = container.getBoundingClientRect()
+            const finalBorderRadius = window.getComputedStyle(container).borderRadius
+            const finalBackgroundColor = window.getComputedStyle(container).backgroundColor
+
+            gsap.set(container, {
+                position: 'fixed',
+                top: rect.top,
+                left: rect.left,
+                width: rect.width,
+                height: rect.height,
+                transform: 'none',
+                borderRadius: originProps.borderRadius,
+                backgroundColor: finalBackgroundColor,
+                boxShadow: originProps.boxShadow,
+                overflow: 'hidden',
+            })
+
+            const tl = gsap.timeline()
+
+            if (backdrop) {
+                gsap.set(backdrop, {
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    opacity: 0,
+                })
+                tl.to(backdrop, {
+                    opacity: 1,
+                    duration: 0.3,
+                    ease: 'power2.out',
+                }, 0)
+            }
+
+            tl.from(container, {
+                opacity: 0,
+                duration: 0.7,
+                ease: easeMain,
+            }, 0)
+
+            tl.from(container, {
+                scale: 0.985,
+                duration: 0.7,
+                ease: easeMain,
+            }, 0)
+
+            tl.to(container, {
+                top: finalRect.top,
+                left: finalRect.left,
+                width: finalRect.width,
+                height: finalRect.height,
+                borderRadius: finalBorderRadius,
+                duration: 0.7,
+                ease: easeMain,
+                onComplete() {
+                    gsap.set(container, { clearProps: 'all' })
+                }
+            }, 0)
+
+            return tl
+        }
+
+        function animateFullscreenCloseToRect({ modal, container, originEl, backdrop }) {
+            const originRect = originEl.getBoundingClientRect()
+            const currentRect = container.getBoundingClientRect()
+
+            gsap.set(container, {
+                position: 'fixed',
+                top: currentRect.top,
+                left: currentRect.left,
+                width: currentRect.width,
+                height: currentRect.height,
+                transform: 'none',
+                overflow: 'hidden',
+            })
+
+            const tl = gsap.timeline()
+
+            tl.to(container, {
+                duration: 0.5,
+                ease: closeEase1,
+                borderRadius: '400px',
+            }, 0)
+            tl.to(container, {
+                duration: 0.5,
+                ease: closeEase2,
+                filter: 'blur(32px)',
+                scale: 0.985,
+            }, 0)
+
+            tl.to(container, {
+                opacity: 0,
+                duration: 0.5,
+                ease: closeEase1,
+            }, 0)
+
+            tl.to(container, {
+                top: originRect.top,
+                left: originRect.left,
+                width: originRect.width,
+                height: originRect.height,
+                duration: 0.5,
+                ease: easeMain,
+            }, 0)
+
+            tl.add(() => {
+                modal.classList.remove('active')
+                gsap.set(container, { clearProps: 'all' })
+                if (backdrop) gsap.set(backdrop, { clearProps: 'all' })
+                accountOriginEl = null
+            })
+
+            return tl
+        }
+
+        function openAccountModal(originEl) {
+            const button = originEl || document.getElementById('accountBtn')
+            accountOriginEl = button
+            const modal = document.getElementById('accountModal')
+            const container = modal.querySelector('.modal-container')
+            const backdrop = modal.querySelector('.modal-backdrop')
+            const content = modal.querySelector('.modal-content')
+            const closeBtn = modal.querySelector('.modal-close-btn')
+
+            const isMobile = window.matchMedia('(max-width: 768px)').matches
+
+            let userInfo = null
+            try { userInfo = JSON.parse(sessionStorage.getItem('user_info') || 'null') } catch (e) { userInfo = null }
+            const displayName = (userInfo && (userInfo.nombre || userInfo.usuario)) ? (userInfo.nombre || userInfo.usuario) : ''
+            const emailEl = document.getElementById('userEmail')
+            const nameEl = document.getElementById('nombreUsuario')
+            if (emailEl) emailEl.textContent = (userInfo && userInfo.email) ? String(userInfo.email) : ''
+            if (nameEl) nameEl.value = displayName
+
+            modal.classList.add('active')
+
+            if (!__hasGsap || !container || !button) {
+                return
+            }
+
+            if (isMobile) {
+                gsap.set([content, closeBtn], { opacity: 0 })
+                gsap.set(modal, { opacity: 1 })
+            } else {
+                gsap.set([content, closeBtn], { opacity: 1 })
+            }
+
+            gsap.set(backdrop, { clearProps: 'all', opacity: 0 })
+
+            const originProps = {
+                borderRadius: window.getComputedStyle(button).borderRadius,
+                background: window.getComputedStyle(button).background,
+                boxShadow: window.getComputedStyle(button).boxShadow,
+            }
+
+            if (isMobile) {
+                gsap.set(container, { clearProps: 'all' })
+
+                const tl = animateFullscreenOpenFromRect({
+                    container,
+                    originEl: button,
+                    backdrop,
+                    originProps,
+                })
+
+                tl.to([content, closeBtn], {
+                    opacity: 1,
+                    duration: 0.2,
+                    ease: 'power2.out',
+                }, 0.12)
+
+                return
+            }
+
+            Flip.fit(container, button, {
+                scale: true,
+                absolute: true
+            })
+
+            const state = Flip.getState(container)
+            gsap.set(container, { clearProps: 'all' })
+
+            Flip.from(state, {
+                targets: container,
+                duration: 0.7,
+                ease: easeMain,
+                scale: true,
+                absolute: false,
+                onStart() {
+                    gsap.from(backdrop, { 
+                        opacity: 1, 
+                        duration: 0.3, 
+                        ease: 'power2.in' 
+                    })
+                    gsap.from(container, {
+                        opacity: 0,
+                        duration: 0.7,
+                        filter: 'blur(8px)',
+                        ease: easeMain,
+                    })
+                    gsap.from(container, {
+                        duration: 0.3,
+                        ease: easeMain,
+                        ...originProps,
+                    })
+                },
+            })
+        }
+
+        function closeAccountModal() {
+            const modal = document.getElementById('accountModal')
+            const container = modal.querySelector('.modal-container')
+            const backdrop = modal.querySelector('.modal-backdrop')
+            const button = accountOriginEl || document.getElementById('accountBtn')
+            const content = modal.querySelector('.modal-content')
+            const closeBtn = modal.querySelector('.modal-close-btn')
+
+            const isMobile = window.matchMedia('(max-width: 768px)').matches
+
+            if (!__hasGsap || !container || !button) {
+                modal.classList.remove('active')
+                accountOriginEl = null
+                return
+            }
+
+            if (isMobile) {
+                gsap.to([content, closeBtn], { opacity: 0, duration: 0.1 })
+                gsap.set(modal, { opacity: 1 })
+                animateFullscreenCloseToRect({
+                    modal,
+                    container,
+                    originEl: button,
+                    backdrop,
+                })
+                return
+            }
+
+            gsap.to([content, closeBtn], { opacity: 0, duration: 0.1 })
+
+            const state = Flip.getState(container)
+
+            Flip.fit(container, button, {
+                scale: true,
+                absolute: true
+            })
+
+            Flip.from(state, {
+                targets: container,
+                duration: 0.5,
+                ease: easeMain,
+                scale: true,
+                absolute: false,
+                onStart() {
+                    gsap.to(container, {
+                        duration: 0.5,
+                        ease: closeEase1,
+                        borderRadius: '400px',
+                    })
+                    gsap.to(container, {
+                        duration: 0.5,
+                        ease: closeEase2,
+                        filter: 'blur(32px)',
+                    })
+                    gsap.to(container, {
+                        opacity: 0,
+                        duration: 0.5,
+                        ease: closeEase1,
+                    })
+
+                    gsap.to(backdrop, {
+                        opacity: 0,
+                        duration: 0.3,
+                        ease: 'power2.in',
+                    })
+                },
+                onComplete() {
+                    modal.classList.remove('active')
+                    gsap.set(container, { clearProps: 'all' })
+                    gsap.set(backdrop, { clearProps: 'all' })
+                    accountOriginEl = null
+                }
+            })
+        }
+
+        async function saveAccountChanges() {
+            const token = sessionStorage.getItem('session_token')
+            if (!token) {
+                alert('No hay sesión activa')
+                return
+            }
+
+            const nombreInput = document.getElementById('nombreUsuario')
+            const nombre = (nombreInput ? nombreInput.value : '').trim()
+            if (!nombre) {
+                alert('Nombre inválido')
+                return
+            }
+
+            const spinner = document.getElementById('saveSpinner')
+            const saveBtn = document.querySelector('#accountModal .btn-save')
+            try {
+                if (spinner) spinner.style.display = 'inline-block'
+                if (saveBtn) saveBtn.disabled = true
+
+                const response = await fetch('/Crear-Noticias/api/usuarios/update_nombre.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ nombre })
+                })
+
+                const result = await response.json().catch(() => ({}))
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || 'Error al guardar cambios')
+                }
+
+                if (result.usuario) {
+                    sessionStorage.setItem('user_info', JSON.stringify(result.usuario))
+
+                    const emailEl = document.getElementById('userEmail')
+                    if (emailEl) emailEl.textContent = (result.usuario.email) ? String(result.usuario.email) : ''
+                }
+
+                closeAccountModal()
+            } catch (error) {
+                console.error('Error al guardar cuenta:', error)
+                alert(error.message || 'Error al guardar cambios')
+            } finally {
+                if (spinner) spinner.style.display = 'none'
+                if (saveBtn) saveBtn.disabled = false
+            }
+        }
+    </script>
+    <script src="ripple-efect.js"></script>
+
+    <!-- HTML del botón (antes de </body>) -->
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Volver arriba">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <script>
+        // ========================================
+// SCROLL TO TOP - FUNCIONALIDAD
+// ========================================
+
+const scrollButton = document.getElementById('scrollToTop');
+const scrollThreshold = 300; // Píxeles desde arriba para mostrar el botón
+
+// Mostrar/ocultar botón según scroll
+window.addEventListener('scroll', () => {
+    if (window.pageYOffset > scrollThreshold) {
+        scrollButton.classList.add('show');
+    } else {
+        scrollButton.classList.remove('show');
+    }
+});
+
+// Función de scroll suave al hacer click
+        scrollButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+    </body>
+    </html>

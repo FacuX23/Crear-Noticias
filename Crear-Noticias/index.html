@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escuela Secundaria Crear - Home</title>
+    <link rel="stylesheet" href="/Crear-Noticias/styles.css">
+
+    <!-- GSAP para animaciones Flip -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+</head>
+<body>
+<header class="header">
+        <div class="header-container">
+            <div class="header-content">
+                <!-- Logo -->
+                <a href="/Crear-Noticias/index.html" class="logo-link">
+                    <div class="logo-icon">
+                        <span class="logo-letter">C</span>
+                    </div>
+                    <span class="logo-text">Crear</span>
+                </a>
+                
+                <!-- Navigation -->
+                <nav class="nav">
+                    <a href="/Crear-Noticias/Noticias/index.html" class="nav-link">
+                        <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+                            <path d="M18 14h-8"></path>
+                            <path d="M15 18h-5"></path>
+                            <path d="M10 6h8v4h-8V6Z"></path>
+                        </svg>
+                        <span class="nav-text">Noticias</span>
+                    </a>
+                    <a href="/Crear-Noticias/Eventos/index.html" class="nav-link">
+                        <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                            <path d="M8 14h.01"></path>
+                            <path d="M12 14h.01"></path>
+                            <path d="M16 14h.01"></path>
+                            <path d="M8 18h.01"></path>
+                            <path d="M12 18h.01"></path>
+                            <path d="M16 18h.01"></path>
+                        </svg>
+                        <span class="nav-text">Eventos</span>
+                    </a>
+                    <a href="/Crear-Noticias/Panel/index.html" type="button" class="nav-button">
+                       <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                       </span>
+                        Ir a panel de estudiante
+                    </a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-button" id="mobileMenuButton" aria-label="Toggle menu">
+                    <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <nav class="mobile-nav" id="mobileNav">
+                <a href="/Crear-Noticias/Noticias/index.html" class="mobile-nav-link">
+                    <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+                        <path d="M18 14h-8"></path>
+                        <path d="M15 18h-5"></path>
+                        <path d="M10 6h8v4h-8V6Z"></path>
+                    </svg>
+                    <span class="nav-text">Noticias</span>
+                </a>
+                <a href="/Crear-Noticias/Eventos/index.html" class="mobile-nav-link">
+                    <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                        <path d="M8 14h.01"></path>
+                        <path d="M12 14h.01"></path>
+                        <path d="M16 14h.01"></path>
+                        <path d="M8 18h.01"></path>
+                        <path d="M12 18h.01"></path>
+                        <path d="M16 18h.01"></path>
+                    </svg>
+                    <span class="nav-text">Eventos</span>
+                </a>
+                <a href="/Crear-Noticias/Panel/index.html" class="nav-button">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                    </span>
+                    Ir a panel de estudiante
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="min-h-screen">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <!-- Left: Text -->
+                    <div class="hero-text">
+                        <h1 class="hero-title">
+                            Escuela Secundaria<br />
+                            <span class="hero-title-accent">-/-/-/-</span>
+                        </h1>
+                        <p class="hero-description">
+                            Mantente informado sobre las últimas noticias y eventos de nuestra comunidad educativa.
+                        </p>
+                        <div class="hero-buttons">
+<!--                             <a href="/Crear-Noticias/Noticias/index.html" class="btn btn-primary">
+                                <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+                                    <path d="M18 14h-8"></path>
+                                    <path d="M15 18h-5"></path>
+                                    <path d="M10 6h8v4h-8V6Z"></path>
+                                </svg>
+                                Ver Noticias
+                            </a> -->
+                            <a href="/Crear-Noticias/Noticias/index.html" class="btn btn-secondary2">
+                                <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+                                    <path d="M18 14h-8"></path>
+                                    <path d="M15 18h-5"></path>
+                                    <path d="M10 6h8v4h-8V6Z"></path>
+                                </svg>
+                                Explorar novedades
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Image -->
+                    <div class="hero-image-wrapper">
+                        <div class="hero-image-container">
+                            <img 
+                                src="escuela.png" 
+                                alt="Estudiantes de la Escuela Crear"
+                                class="hero-image"
+                            />
+                        </div>
+                        <div class="hero-decoration-large"></div>
+                        <div class="hero-decoration-small"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Weather Card Section -->
+    <section class="container weather-section">
+        <div class="weather-card">
+            <div class="weather-header">
+                <div class="weather-title">
+                    <h3>Clima en Concordia</h3>
+                    <p class="weather-location">Entre Ríos, Argentina</p>
+                </div>
+                <div class="weather-icon" id="weatherIcon">
+                    <!-- El icono se actualizará dinámicamente aquí -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                    </svg>
+                </div>
+            </div>
+
+            
+
+            <!-- Weather Data -->
+            <div class="weather-grid hidden" id="weatherData">
+                <div>
+                    <div class="weather-temp" id="temperature">--°C</div>
+                    <p class="weather-description" id="description">--</p>
+                </div>
+                <div class="weather-stat">
+                    <div class="weather-stat-icon icon-droplet"></div>
+                    <div>
+                        <div class="weather-stat-value" id="humidity">--%</div>
+                        <p class="weather-stat-label">Humedad</p>
+                    </div>
+                </div>
+                <div class="weather-stat">
+                    <div class="weather-stat-icon icon-wind"></div>
+                    <div>
+                        <div class="weather-stat-value" id="windSpeed">-- km/h</div>
+                        <p class="weather-stat-label">Viento</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <p class="hidden" id="errorState">No se pudo cargar el clima</p>
+        </div>
+
+        <!-- Botón para ver siguientes días -->
+<button class="weather-forecast-toggle" id="forecastToggle">
+    Ver los siguientes días
+    <svg class="forecast-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+</button>
+
+<!-- Pronóstico extendido (oculto por defecto) -->
+<div class="forecast-extended" id="forecastExtended">
+    <div class="forecast-days-grid" id="forecastDaysGrid">
+        <!-- Las cards se generarán dinámicamente aquí -->
+    </div>
+</div>
+    </section>
+
+        <!-- CTA Panel Section -->
+    <section class="container cta-section">
+        <div class="cta-wrapper">
+            <div class="cta-card">
+                <div class="cta-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus-icon lucide-user-plus"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                </div>
+                <h2 class="cta-title">Accede como estudiante o profesor al panel</h2>
+                <button type="button" id="loginButton" class="cta-link" style="border-color: transparent; cursor: pointer;">
+                    Ir al panel 
+                    <span class="arrow-icon icon-arrow"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de Login -->
+    <div id="loginModal" class="login-modal" style="display: none;">
+        <div class="login-backdrop"></div>
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h2 class="login-title">Acceso al Panel</h2>
+                    <p class="login-subtitle">Ingresá tus datos para continuar</p>
+                </div>
+                
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="loginEmail" class="form-label">Correo electrónico</label>
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="Tu correo"
+                            required
+                            autocomplete="email"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword" class="form-label">Contraseña</label>
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            name="password" 
+                            class="form-input" 
+                            placeholder="Tu contraseña"
+                            required
+                            autocomplete="current-password"
+                        >
+                    </div>
+                    
+                    <div id="loginError" class="login-error" style="display: none;"></div>
+                    
+                    <div class="login-actions">
+                        <button type="button" id="loginCancel" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" id="loginSubmit" class="btn btn-primary">
+                            <span id="loginButtonText">Ingresar</span>
+                            <div id="loginSpinner" class="login-spinner" style="display: none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="2" x2="12" y2="6"></line>
+                                    <line x1="12" y1="18" x2="12" y2="22"></line>
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+        
+
+    <script src="/Crear-Noticias/header.js"></script>
+    <script src="/Crear-Noticias/wather.js"></script>
+
+    <!-- HTML del botón (antes de </body>) -->
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Volver arriba">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <script>
+// ========================================
+// SCROLL TO TOP - FUNCIONALIDAD
+// ========================================
+
+const scrollButton = document.getElementById('scrollToTop');
+const scrollThreshold = 300; // Píxeles desde arriba para mostrar el botón
+
+// Mostrar/ocultar botón según scroll
+window.addEventListener('scroll', () => {
+    if (window.pageYOffset > scrollThreshold) {
+        scrollButton.classList.add('show');
+    } else {
+        scrollButton.classList.remove('show');
+    }
+});
+
+// Función de scroll suave al hacer click
+        scrollButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+     <script>
+        // Abrir modal de login con el boton de "Ir al panel"
+document.addEventListener('DOMContentLoaded', function() {
+    const loginButton = document.getElementById('loginButton');
+    const loginModal = document.getElementById('loginModal');
+    const loginCancel = document.getElementById('loginCancel');
+    const loginForm = document.getElementById('loginForm');
+
+    // Verificar si hay sesión activa
+    function hasSessionToken() {
+        return !!sessionStorage.getItem('session_token');
+    }
+
+    // Actualizar texto del botón según estado de sesión
+    function updateButtonText() {
+        if (loginButton) {
+            const buttonText = loginButton.childNodes[0]; // Primer nodo de texto
+            if (hasSessionToken()) {
+                buttonText.textContent = 'Ir al panel de Estudiante ';
+            } else {
+                buttonText.textContent = 'Ir al panel ';
+            }
+        }
+    }
+
+    // Función para mostrar el modal de login
+    function showLoginModal() {
+        if (loginModal) {
+            loginModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Reset form si existe
+            if (loginForm) {
+                loginForm.reset();
+                const loginError = document.getElementById('loginError');
+                if (loginError) loginError.style.display = 'none';
+                
+                const loginSubmit = document.getElementById('loginSubmit');
+                const loginButtonText = document.getElementById('loginButtonText');
+                const loginSpinner = document.getElementById('loginSpinner');
+                if (loginSubmit) loginSubmit.disabled = false;
+                if (loginButtonText) loginButtonText.style.display = 'inline';
+                if (loginSpinner) loginSpinner.style.display = 'none';
+            }
+            
+            // Focus en el input de email
+            setTimeout(() => {
+                const emailInput = document.getElementById('loginEmail');
+                if (emailInput) {
+                    emailInput.focus();
+                }
+            }, 100);
+        }
+    }
+
+    // Función para ocultar el modal
+    function hideLoginModal() {
+        if (loginModal) {
+            loginModal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Click en el botón "Ir al panel"
+    if (loginButton) {
+        loginButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Si ya hay sesión, redirigir al panel
+            if (hasSessionToken()) {
+                window.location.href = '/Crear-Noticias/Panel/index.html';
+                return;
+            }
+            
+            // Si no hay sesión, mostrar modal de login
+            showLoginModal();
+        });
+    }
+
+    // Manejar el envío del formulario de login
+    if (loginForm) {
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const loginError = document.getElementById('loginError');
+            const loginSubmit = document.getElementById('loginSubmit');
+            const loginButtonText = document.getElementById('loginButtonText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            
+            if (!email || !password) {
+                if (loginError) {
+                    loginError.textContent = 'Por favor, completá todos los campos';
+                    loginError.style.display = 'block';
+                }
+                return;
+            }
+
+            const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            if (!isValidEmail) {
+                if (loginError) {
+                    loginError.textContent = 'Ingresá un correo válido';
+                    loginError.style.display = 'block';
+                }
+                return;
+            }
+            
+            // Mostrar loading
+            if (loginSubmit) loginSubmit.disabled = true;
+            if (loginButtonText) loginButtonText.style.display = 'none';
+            if (loginSpinner) loginSpinner.style.display = 'inline';
+            if (loginError) loginError.style.display = 'none';
+            
+            try {
+                const response = await fetch('/Crear-Noticias/api/auth/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Guardar token y datos del usuario
+                    sessionStorage.setItem('session_token', data.token);
+                    sessionStorage.setItem('user_info', JSON.stringify(data.usuario));
+                    sessionStorage.setItem('token_expires', data.expira_en);
+                    
+                    // Actualizar texto del botón
+                    updateButtonText();
+                    
+                    // Cerrar modal
+                    hideLoginModal();
+                    
+                    // Redirigir al panel
+                    window.location.href = '/Crear-Noticias/Panel/index.html';
+                } else {
+                    if (loginError) {
+                        loginError.textContent = data.error || 'Error al iniciar sesión';
+                        loginError.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                if (loginError) {
+                    loginError.textContent = 'Error de conexión. Intentá de nuevo.';
+                    loginError.style.display = 'block';
+                }
+            } finally {
+                // Resetear loading state
+                if (loginSubmit) loginSubmit.disabled = false;
+                if (loginButtonText) loginButtonText.style.display = 'inline';
+                if (loginSpinner) loginSpinner.style.display = 'none';
+            }
+        });
+    }
+
+    // Cerrar modal con botón cancelar
+    if (loginCancel) {
+        loginCancel.addEventListener('click', function() {
+            hideLoginModal();
+        });
+    }
+
+    // Cerrar modal al hacer click en el backdrop
+    if (loginModal) {
+        loginModal.addEventListener('click', function(e) {
+            if (e.target === loginModal || e.target.classList.contains('login-backdrop')) {
+                hideLoginModal();
+            }
+        });
+    }
+
+    // Cerrar modal con tecla Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && loginModal && loginModal.style.display === 'flex') {
+            hideLoginModal();
+        }
+    });
+
+    // Actualizar texto del botón al cargar la página
+    updateButtonText();
+
+    // Detectar cambios en sessionStorage (por si se cierra sesión en otra pestaña)
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'session_token') {
+            updateButtonText();
+        }
+    });
+
+    // Actualizar al volver a la página (navegación hacia atrás/adelante)
+    window.addEventListener('pageshow', function() {
+        updateButtonText();
+    });
+});
+</script>
+</body>
+</html>

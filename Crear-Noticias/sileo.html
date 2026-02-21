@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sileo — Demo Vanilla JS</title>
+ 
+  <!-- CSS oficial de sileo-vanilla -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hamada147/sileo-vanilla/dist/styles.css" id="sileo-css" />
+ 
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f0f10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      color: #e5e5ea;
+    }
+ 
+    h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; }
+    h1 span { color: #555; font-weight: 400; }
+ 
+    .positions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .pos-btn {
+      padding: 6px 14px; border-radius: 99px;
+      border: 1px solid #2a2a2e; background: transparent;
+      color: #666; font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: all .15s;
+    }
+    .pos-btn:hover, .pos-btn.active {
+      background: #222; color: #e5e5ea; border-color: #444;
+    }
+ 
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .btn {
+      padding: 12px 20px; border: none; border-radius: 12px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: transform .1s;
+    }
+    .btn:active { transform: scale(0.95); }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-success { background: #1a3d2b; color: #30d158; }
+    .btn-error   { background: #3d1a1a; color: #ff453a; }
+    .btn-warning { background: #3d2d1a; color: #ffd60a; }
+    .btn-info    { background: #1a2a3d; color: #0a84ff; }
+    .btn-action  { background: #2a2a3d; color: #bf5af2; }
+    .btn-promise { background: #1e2a1e; color: #30d158; }
+ 
+    /* Fix para asegurar que el texto del badge sea visible */
+    [data-sileo-title] {
+      display: inline-block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      font-size: 0.825rem !important;
+      line-height: 1rem !important;
+      font-weight: 500 !important;
+      text-transform: capitalize !important;
+    }
+ 
+    [data-sileo-header-inner] {
+      display: flex !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
+    }
+  </style>
+</head>
+<body>
+ 
+  <h1>Sileo <span>/ Vanilla JS</span></h1>
+ 
+  <div class="positions">
+    <button class="pos-btn" data-pos="top-left">top-left</button>
+    <button class="pos-btn active" data-pos="top-center">top-center</button>
+    <button class="pos-btn" data-pos="top-right">top-right</button>
+    <button class="pos-btn" data-pos="bottom-left">bottom-left</button>
+    <button class="pos-btn" data-pos="bottom-center">bottom-center</button>
+    <button class="pos-btn" data-pos="bottom-right">bottom-right</button>
+  </div>
+ 
+  <div class="grid">
+    <button class="btn btn-success" onclick="fire('success')">✅ Success</button>
+    <button class="btn btn-error"   onclick="fire('error')">❌ Error</button>
+    <button class="btn btn-warning" onclick="fire('warning')">⚠️ Warning</button>
+    <button class="btn btn-info"    onclick="fire('info')">ℹ️ Info</button>
+    <button class="btn btn-action"  onclick="fireAction()">🔘 Action</button>
+    <button class="btn btn-promise" onclick="firePromise()">⏳ Promise</button>
+  </div>
+ 
+  <!-- JS oficial de sileo-vanilla -->
+  <script src="https://cdn.jsdelivr.net/gh/hamada147/sileo-vanilla/dist/sileo.iife.js"></script>
+ 
+  <script>
+    let currentPosition = 'top-center';
+    let sileoReady = false;
+ 
+    // Deshabilitar todos los botones hasta que cargue el CSS
+    document.querySelectorAll('.btn').forEach(btn => btn.disabled = true);
+ 
+    // Esperar a que el CSS cargue completamente
+    const cssLink = document.getElementById('sileo-css');
+ 
+    function initializeSileo() {
+      sileoReady = true;
+      sileo.init({ position: currentPosition });
+ 
+      // Habilitar botones
+      document.querySelectorAll('.btn').forEach(btn => btn.disabled = false);
+ 
+      // Observer para forzar estilos en cada toast
+      const observer = new MutationObserver(() => {
+        document.querySelectorAll('[data-sileo-title]').forEach(el => {
+          el.style.display = 'inline-block';
+          el.style.opacity = '1';
+          el.style.visibility = 'visible';
+        });
+        document.querySelectorAll('[data-sileo-header-inner]').forEach(el => {
+          el.style.display = 'flex';
+          el.style.alignItems = 'center';
+          el.style.gap = '0.5rem';
+        });
+      });
+ 
+      observer.observe(document.body, { 
+        childList: true, 
+        subtree: true 
+      });
+    }
+ 
+    // Detectar cuando el CSS está cargado
+    if (cssLink.sheet) {
+      // Ya está cargado
+      initializeSileo();
+    } else {
+      // Esperar a que cargue
+      cssLink.addEventListener('load', initializeSileo);
+      // Fallback por si falla la detección
+      setTimeout(initializeSileo, 1000);
+    }
+ 
+    // Al cambiar posición: limpiar todos los toasts activos primero
+    document.querySelectorAll('.pos-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!sileoReady) return;
+ 
+        document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+ 
+        sileo.clear();
+        currentPosition = btn.dataset.pos;
+      });
+    });
+ 
+    const messages = {
+      success: { title: 'Changes Saved',        description: 'Your changes were saved to the database.' },
+      error:   { title: 'Something went wrong',  description: 'Please try again or contact support.' },
+      warning: { title: 'Storage Almost Full',   description: 'You are using 95% of your storage.' },
+      info:    { title: 'Update Available',       description: 'A new version is ready to install.' },
+    };
+ 
+    function fire(type) {
+      if (!sileoReady) return;
+      sileo[type]({ ...messages[type], position: currentPosition });
+    }
+ 
+    function fireAction() {
+      if (!sileoReady) return;
+      sileo.action({
+        title: 'Message Deleted',
+        description: 'The message was moved to trash.',
+        position: currentPosition,
+        button: {
+          title: '↩ Undo',
+          onClick: () => sileo.success({
+            title: 'Restored!',
+            description: 'Your message is back.',
+            position: currentPosition,
+          }),
+        },
+      });
+    }
+ 
+    function firePromise() {
+      if (!sileoReady) return;
+      const req = new Promise((res, rej) =>
+        setTimeout(() => Math.random() > 0.3 ? res() : rej(), 2500)
+      );
+      sileo.promise(req, {
+        loading: { title: 'Uploading file…',  description: 'Please wait.' },
+        success: { title: 'Upload complete!', description: 'Your file is ready.' },
+        error:   { title: 'Upload failed',    description: 'Check your connection.' },
+      });
+    }
+  </script>
+ 
+</body>
