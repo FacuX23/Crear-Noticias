@@ -12,15 +12,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 </head>
 <body>
-<header class="header">
+    <div class="mobile-top-nav" aria-label="Navegación">
+        <a href="/Crear-Noticias/Noticias/index.html" class="mobile-top-item" style="text-decoration: none;">
+            <svg class="mobile-nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+                <path d="M18 14h-8"></path>
+                <path d="M15 18h-5"></path>
+                <path d="M10 6h8v4h-8V6Z"></path>
+            </svg>
+            <span>Noticias</span>
+        </a>
+        <a href="/Crear-Noticias/Eventos/index.html" class="mobile-top-item" style="text-decoration: none;">
+            <svg class="mobile-nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <path d="M8 14h.01"></path>
+                <path d="M12 14h.01"></path>
+                <path d="M16 14h.01"></path>
+                <path d="M8 18h.01"></path>
+                <path d="M12 18h.01"></path>
+                <path d="M16 18h.01"></path>
+            </svg>
+            <span>Eventos</span>
+        </a>
+        <a href="/Crear-Noticias/Panel/index.html" class="mobile-top-item" style="text-decoration: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Panel</span>
+        </a>
+    </div>
+
+    <header class="header">
         <div class="header-container">
             <div class="header-content">
                 <!-- Logo -->
                 <a href="/Crear-Noticias/index.html" class="logo-link">
                     <div class="logo-icon">
-                        <span class="logo-letter">C</span>
+                        <img src="/Crear-Noticias/logo.png" alt="Logo" class="logo-icon">
                     </div>
-                    <span class="logo-text">Crear</span>
+                    <span class="logo-text">Escuela Crear</span>
                 </a>
                 
                 <!-- Navigation -->
@@ -56,50 +87,10 @@
                         Ir a panel de estudiante
                     </a>
                 </nav>
-
-                <!-- Mobile Menu Button -->
-                <button class="mobile-menu-button" id="mobileMenuButton" aria-label="Toggle menu">
-                    <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                </button>
             </div>
+            
+            
 
-            <!-- Mobile Menu -->
-            <nav class="mobile-nav" id="mobileNav">
-                <a href="/Crear-Noticias/Noticias/index.html" class="mobile-nav-link">
-                    <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
-                        <path d="M18 14h-8"></path>
-                        <path d="M15 18h-5"></path>
-                        <path d="M10 6h8v4h-8V6Z"></path>
-                    </svg>
-                    <span class="nav-text">Noticias</span>
-                </a>
-                <a href="/Crear-Noticias/Eventos/index.html" class="mobile-nav-link">
-                    <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                        <path d="M8 14h.01"></path>
-                        <path d="M12 14h.01"></path>
-                        <path d="M16 14h.01"></path>
-                        <path d="M8 18h.01"></path>
-                        <path d="M12 18h.01"></path>
-                        <path d="M16 18h.01"></path>
-                    </svg>
-                    <span class="nav-text">Eventos</span>
-                </a>
-                <a href="/Crear-Noticias/Panel/index.html" class="nav-button">
-                    <span class="nav-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
-                    </span>
-                    Ir a panel de estudiante
-                </a>
-            </nav>
         </div>
     </header>
 
@@ -112,7 +103,7 @@
                     <div class="hero-text">
                         <h1 class="hero-title">
                             Escuela Secundaria<br />
-                            <span class="hero-title-accent">-/-/-/-</span>
+                            <span class="hero-title-accent">Crear</span>
                         </h1>
                         <p class="hero-description">
                             Mantente informado sobre las últimas noticias y eventos de nuestra comunidad educativa.
@@ -354,7 +345,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function showLoginModal() {
         if (loginModal) {
             loginModal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.overflow = 'hidden';
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
             
             // Reset form si existe
             if (loginForm) {
@@ -384,7 +377,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function hideLoginModal() {
         if (loginModal) {
             loginModal.style.display = 'none';
-            document.body.style.overflow = '';
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = ''; // ← limpiar el padding
         }
     }
 
