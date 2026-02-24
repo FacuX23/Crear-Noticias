@@ -1,3 +1,7 @@
+:root {
+    --nav-height: 80px;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -9,11 +13,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
-}
-
-html {
-    scrollbar-gutter: stable;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: #f9fafb;
 }
 
 ::-webkit-scrollbar {
@@ -37,8 +37,9 @@ background: #1d4ed8;
 
 /* Header */
 .header {
-    background-color: white;
-    border-bottom: 1px solid #f1f5f9;
+    background-color: #f9fafbcf;
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid #eeebeb;
 }
 
 .header-container {
@@ -76,14 +77,17 @@ background: #1d4ed8;
 }
 
 .logo-text {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
     font-size: 1.25rem;
-    font-weight: 600;
     color: #0f172a;
     letter-spacing: -0.025em;
 }
 
 /* Desktop Navigation */
 .nav {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
     display: none;
     align-items: center;
     gap: 0.5rem;
@@ -96,6 +100,8 @@ background: #1d4ed8;
 }
 
 .nav-link {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -231,7 +237,7 @@ background: #1d4ed8;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.25rem;
+/*     gap: 0.25rem; */
     font-size: 0.875rem;
     font-weight: 600;
     color: #264774;
@@ -272,7 +278,7 @@ background: #1d4ed8;
         z-index: 40;
         align-items: center;
         justify-content: center;
-        gap: 2.25rem;
+        gap: 0;
         padding: 0 1rem;
     }
 
@@ -282,7 +288,6 @@ background: #1d4ed8;
 }
 
 .min-h-screen {
-    min-height: 100vh;
     background-color: #f9fafb;
 }
 
@@ -321,12 +326,16 @@ background: #1d4ed8;
 }
 
 .page-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
     font-size: 2.25rem;
     font-weight: bold;
     color: #0f172a;
 }
 
 .page-description {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     color: #475569;
     font-size: 1.125rem;
 }
@@ -463,6 +472,8 @@ background: #1d4ed8;
 }
 
 .login-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
     font-size: 1.5rem;
     font-weight: 700;
     color: #0f172a;
@@ -470,6 +481,8 @@ background: #1d4ed8;
 }
 
 .login-subtitle {
+    font-family: "Nunito", sans-serif;
+    font-weight: 400;
     color: #64748b;
     font-size: 0.875rem;
 }
@@ -500,6 +513,46 @@ background: #1d4ed8;
     background-color: white;
 }
 
+.password-field {
+    position: relative;
+    width: 100%;
+}
+
+.password-field .form-input {
+    padding-right: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    color: #334155;
+}
+
+.password-icon-hide {
+    display: none;
+}
+
+.password-toggle.is-visible .password-icon-show {
+    display: none;
+}
+
+.password-toggle.is-visible .password-icon-hide {
+    display: inline;
+}
+
 .form-input:focus {
     outline: none;
     border-color: #2563eb;
@@ -527,10 +580,11 @@ background: #1d4ed8;
 }
 
 .login-actions .btn {
+    font-family: "Nunito", sans-serif;
     flex: 1;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
-    font-weight: 500;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
     border: none;
@@ -625,7 +679,7 @@ background: #1d4ed8;
 
 .scroll-to-top {
     position: fixed;
-    bottom: 30px;
+    bottom: 46px;
     right: -60px; /* Oculto fuera de la pantalla */
     width: 50px;
     height: 50px;
@@ -668,7 +722,7 @@ background: #1d4ed8;
     .scroll-to-top {
         width: 45px;
         height: 45px;
-        bottom: 20px;
+        bottom: 77px;
     }
 
     .scroll-to-top.show {

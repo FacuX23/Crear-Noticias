@@ -94,13 +94,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updatePanelButtonsUI() {
         const label = hasSessionToken() ? 'Ir a panel de estudiante' : 'Iniciar sesión';
-        const panelButtons = document.querySelectorAll('a.nav-button[href*="/Panel/"], .mobile-nav a[href*="/Panel/"]');
+        const panelButtons = document.querySelectorAll('a.nav-button[href*="/Panel/"], a.mobile-top-item[href*="/Panel/"]');
         panelButtons.forEach((button) => setPanelButtonLabel(button, label));
     }
 
     // Handle clicks on "Ir a panel de estudiante" buttons
     function setupPanelButtons() {
-        const panelButtons = document.querySelectorAll('a.nav-button[href*="/Panel/"], .mobile-nav a[href*="/Panel/"]');
+        const panelButtons = document.querySelectorAll('a.nav-button[href*="/Panel/"], a.mobile-top-item[href*="/Panel/"]');
 
         panelButtons.forEach(button => {
             if (button.hasAttribute('data-login-setup')) return;

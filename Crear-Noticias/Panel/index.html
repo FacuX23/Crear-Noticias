@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - Escuela Crear</title>
     <link rel="stylesheet" href="/Crear-Noticias/Panel/styles.css">
+    <link rel="icon" href="/Crear-Noticias/logo.png" type="image/png">
+
+        <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Calistoga&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="mobile-top-nav" aria-label="Navegación">
@@ -74,7 +80,7 @@
                 </a> -->
 
             <nav class="sidebar-nav">
-                <h2 class="sidebar-title2">Menu</h2>
+                <h2 class="sidebar-title2">Menú</h2>
                 <button class="sidebar-nav-item active ripple_effect" data-tab="noticias">
                     <svg class="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
@@ -108,7 +114,7 @@
                 
                 <button class="sidebar-nav-item ripple_effect" data-tab="usuarios">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
-                    <span>Usuarios</span>
+                    <span>Gestión de Usuarios</span>
                 </button>   
                 
                 <button class="sidebar-nav-item ripple_effect" data-tab="account" id="accountBtn" onclick="openAccountModal(this)">
@@ -267,7 +273,21 @@
 
                             <div class="form-group">
                                 <label class="form-label">Contraseña</label>
-                                <input type="password" id="userNuevoPassword" class="form-input" placeholder="Contraseña" autocomplete="new-password">
+                                <div class="password-field">
+                                    <input type="password" id="userNuevoPassword" class="form-input" placeholder="Contraseña" autocomplete="new-password">
+                                    <button type="button" class="password-toggle" aria-label="Mostrar u ocultar contraseña" onclick="togglePasswordVisibility('userNuevoPassword', this)">
+                                        <svg class="password-icon password-icon-show" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                                            <circle cx="12" cy="12" r="3"/>
+                                        </svg>
+                                        <svg class="password-icon password-icon-hide" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M10.733 5.076A10.744 10.744 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                                            <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                                            <line x1="2" y1="2" x2="22" y2="22"/>
+                                            <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -291,7 +311,7 @@
 
                             <div class="form-buttons">
                                 <button id="userCancelBtn" class="btn-secondary" type="button">Limpiar</button>
-                                <button id="userCreateBtn" class="btn-primary" type="button">Crear</button>
+                                <button id="userCreateBtn" class="btn-primary" type="button">Crear usuario</button>
                             </div>
                         </form>
                     </div>
@@ -440,7 +460,7 @@
                                 </svg>
                             </div>
                             <h2 class="delete-modal-title">Eliminar <span id="deleteModalTipo">tipo</span></h2>
-                            <p class="delete-modal-subtitle">Estas seguro de eliminar este/a "<span id="deleteModalTipo2">tipo</span>"</p>
+                            <p class="delete-modal-subtitle">Estas seguro de eliminar <span id="deleteModalArticulo">este</span> "<span id="deleteModalTipo2">tipo</span>"</p>
                             <div class="delete-modal-buttons">
                                 <button id="deleteCancelBtn" class="delete-btn-cancel" onclick="closeDeleteModal()">No</button>
                                 <button id="deleteConfirmBtn" class="delete-btn-confirm">Si</button>

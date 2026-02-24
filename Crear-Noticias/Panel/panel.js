@@ -25,6 +25,20 @@ const MEDIA_STORE_NAME = 'media_files';
 
 const mediaUrlCache = new Map();
 
+function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    const nextType = input.type === 'password' ? 'text' : 'password';
+    input.type = nextType;
+
+    if (btn && btn.classList) {
+        btn.classList.toggle('is-visible', nextType === 'text');
+    }
+}
+
+window.togglePasswordVisibility = togglePasswordVisibility;
+
 function openMediaDb() {
     return new Promise((resolve, reject) => {
         const req = indexedDB.open(MEDIA_DB_NAME, MEDIA_DB_VERSION);
@@ -164,10 +178,11 @@ function initSileoOnce() {
         window.fireToast = function(type, title, description) {
             const start = Date.now();
             const attempt = () => {
-                const has = typeof window.notifySuccess === 'function' && typeof window.notifyInfo === 'function' && typeof window.notifyError === 'function';
+                const has = typeof window.notifySuccess === 'function' && typeof window.notifyInfo === 'function' && typeof window.notifyError === 'function' && typeof window.notifyWarning === 'function';
                 if (has) {
                     if (type === 'success') window.notifySuccess(title, description);
                     else if (type === 'info') window.notifyInfo(title, description);
+                    else if (type === 'warning') window.notifyWarning(title, description);
                     else window.notifyError(title, description);
                     return;
                 }
@@ -221,18 +236,44 @@ function initSileoOnce() {
         };
     }
 
+    if (!window.notifyWarning) {
+        window.notifyWarning = function(title, description) {
+            try {
+                if (window.sileo && typeof window.sileo.warning === 'function') {
+                    window.sileo.warning({
+                        title: title || 'Atención',
+                        description: description || '',
+                        position: 'top-center'
+                    });
+                } else {
+                    window.sileo.info({
+                        title: title || 'Atención',
+                        description: description || '',
+                        position: 'top-center'
+                    });
+                }
+            } catch (e) {
+                // noop
+            }
+        };
+    }
+
     window.saveAccountChanges = async function() {
         ensureSileoReady();
         const token = sessionStorage.getItem('session_token');
         if (!token) {
-            alert('No hay sesión activa');
+            if (window.fireToast) {
+                window.fireToast('error', 'Sesión', 'No hay sesión activa');
+            }
             return;
         }
 
         const nombreInput = document.getElementById('nombreUsuario');
         const nombre = (nombreInput ? nombreInput.value : '').trim();
         if (!nombre) {
-            alert('Nombre inválido');
+            if (window.fireToast) {
+                window.fireToast('info', 'Revisá el nombre', 'Nombre inválido');
+            }
             return;
         }
 
@@ -257,12 +298,7 @@ function initSileoOnce() {
             if (!response.ok || !result.success) {
                 if (response.status === 409) {
                     if (window.fireToast) {
-                        window.fireToast
-                        sileo.warning({
-                            title: 'Nombre en uso',
-                            description: 'Ese nombre ya está en uso. Elegí otro.',
-                            position: 'top-center',
-                        })
+                        window.fireToast('warning', 'Nombre de usuario', 'Ese nombre ya está en uso. Elegí otro.');
                     }
                     return;
                 }
@@ -277,7 +313,7 @@ function initSileoOnce() {
             }
 
             if (window.fireToast) {
-                window.fireToast('success', 'Cambios guardados', 'Tu nombre se actualizó correctamente.');
+                window.fireToast('success', 'Nombre de usuario', 'Tu nombre de usuario se actualizó correctamente.');
             }
 
             if (typeof window.closeAccountModal === 'function') {
@@ -285,7 +321,9 @@ function initSileoOnce() {
             }
         } catch (error) {
             console.error('Error al guardar cuenta:', error);
-            alert(error.message || 'Error al guardar cambios');
+            if (window.fireToast) {
+                window.fireToast('error', 'Error', error.message || 'Error al guardar cambios');
+            }
         } finally {
             if (spinner) spinner.style.display = 'none';
             if (saveBtn) saveBtn.disabled = false;
@@ -1821,7 +1859,10 @@ async function handleFileUpload(e, type) {
         updateFormUI();
     } catch (error) {
         console.error('Error al subir archivo:', error);
-        alert(error.message || 'Error al subir el archivo');
+        ensureSileoReady();
+        if (window.fireToast) {
+            window.fireToast('error', 'Error', error.message || 'Error al subir el archivo');
+        }
     } finally {
         isUploading = false;
         uploadingIndicator.style.display = 'none';
@@ -1852,22 +1893,34 @@ async function handleSave() {
     }
 
     if (!formData.titulo) {
-        alert('El título es obligatorio');
+        ensureSileoReady();
+        if (window.fireToast) {
+            window.fireToast('info', 'Falta un dato', 'El título es obligatorio');
+        }
         return;
     }
 
     if (activeTab === 'noticias' && !formData.contenido) {
-        alert('El contenido es obligatorio');
+        ensureSileoReady();
+        if (window.fireToast) {
+            window.fireToast('info', 'Falta un dato', 'El contenido es obligatorio');
+        }
         return;
     }
 
     if (activeTab === 'eventos' && !formData.descripcion) {
-        alert('La descripción es obligatoria');
+        ensureSileoReady();
+        if (window.fireToast) {
+            window.fireToast('info', 'Falta un dato', 'La descripción es obligatoria');
+        }
         return;
     }
 
     if (activeTab === 'eventos' && !formData.fecha_evento) {
-        alert('La fecha del evento es obligatoria');
+        ensureSileoReady();
+        if (window.fireToast) {
+            window.fireToast('info', 'Falta un dato', 'La fecha, hora y lugar del evento son obligatorios');
+        }
         return;
     }
 
@@ -1971,10 +2024,12 @@ async function handleSave() {
 
         if (result.success) {
             if (window.fireToast) {
-                const tipo = editingItem
-                    ? `${activeTab === 'noticias' ? 'Noticia' : 'Evento'} actualizado`
-                    : `${activeTab === 'noticias' ? 'Noticia' : 'Evento'} creado`;
-                window.fireToast('success', tipo, 'Los cambios se guardaron correctamente.');
+                const isNoticias = activeTab === 'noticias';
+                const entidad = isNoticias ? 'Noticia' : 'Evento';
+                const accion = editingItem
+                    ? (isNoticias ? 'actualizada' : 'actualizado')
+                    : (isNoticias ? 'Creada' : 'Creado');
+                window.fireToast('success', `${entidad} ${accion}`, 'Los cambios se guardaron correctamente.');
             }
             closeForm(() => {
                 loadData();
@@ -1984,7 +2039,10 @@ async function handleSave() {
         }
     } catch (error) {
         console.error('Error al guardar:', error);
-        alert(error.message || 'Error al guardar. Por favor, intenta de nuevo.');
+        ensureSileoReady();
+        if (window.fireToast) {
+            window.fireToast('error', 'Error', error.message || 'Error al guardar. Por favor, intenta de nuevo.');
+        }
     } finally {
         isSaving = false;
         saveBtn.disabled = false;
@@ -2024,7 +2082,9 @@ async function handleDelete(itemId) {
         }
     } catch (error) {
         console.error('Error al eliminar:', error);
-        alert(error.message || 'Error al eliminar');
+        if (window.fireToast) {
+            window.fireToast('error', 'Error', error.message || 'Error al eliminar');
+        }
     }
 }
 
@@ -2188,15 +2248,19 @@ function openDeleteModal(itemId, originEl) {
     const backdrop = modal.querySelector('.modal-backdrop');
 
     const tipo = activeTab === 'noticias' ? 'Noticia' : 'Evento';
+    const articulo = activeTab === 'noticias' ? 'esta' : 'este';
     const tipoEl1 = document.getElementById('deleteModalTipo');
     const tipoEl2 = document.getElementById('deleteModalTipo2');
+    const articuloEl = document.getElementById('deleteModalArticulo');
     if (tipoEl1) tipoEl1.textContent = tipo;
     if (tipoEl2) tipoEl2.textContent = tipo;
+    if (articuloEl) articuloEl.textContent = articulo;
 
     const confirmBtn = document.getElementById('deleteConfirmBtn');
     if (confirmBtn) {
         confirmBtn.onclick = () => {
             const id = deletePendingId;
+
             closeDeleteModal(() => {
                 if (id != null && id !== '') handleDelete(Number(id));
             });

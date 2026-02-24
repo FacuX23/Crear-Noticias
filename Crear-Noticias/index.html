@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escuela Secundaria Crear - Home</title>
     <link rel="stylesheet" href="/Crear-Noticias/styles.css">
+    <link rel="icon" href="/Crear-Noticias/logo.png" type="image/png">
+    
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Calistoga&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
     <!-- GSAP para animaciones Flip -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -39,7 +45,7 @@
         </a>
         <a href="/Crear-Noticias/Panel/index.html" class="mobile-top-item" style="text-decoration: none;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Panel</span>
+            <span></span>
         </a>
     </div>
 
@@ -84,7 +90,7 @@
                        <span class="nav-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
                        </span>
-                        Ir a panel de estudiante
+                    Iniciar sesión
                     </a>
                 </nav>
             </div>
@@ -248,15 +254,29 @@
                     
                     <div class="form-group">
                         <label for="loginPassword" class="form-label">Contraseña</label>
-                        <input 
-                            type="password" 
-                            id="loginPassword" 
-                            name="password" 
-                            class="form-input" 
-                            placeholder="Tu contraseña"
-                            required
-                            autocomplete="current-password"
-                        >
+                        <div class="password-field">
+                            <input 
+                                type="password" 
+                                id="loginPassword" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Tu contraseña"
+                                required
+                                autocomplete="current-password"
+                            >
+                            <button type="button" class="password-toggle" aria-label="Mostrar u ocultar contraseña" onclick="togglePasswordVisibility('loginPassword', this)">
+                                <svg class="password-icon password-icon-show" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                <svg class="password-icon password-icon-hide" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M10.733 5.076A10.744 10.744 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                                    <line x1="2" y1="2" x2="22" y2="22"/>
+                                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     
                     <div id="loginError" class="login-error" style="display: none;"></div>
@@ -317,209 +337,216 @@ window.addEventListener('scroll', () => {
     </script>
 
      <script>
-        // Abrir modal de login con el boton de "Ir al panel"
-document.addEventListener('DOMContentLoaded', function() {
-    const loginButton = document.getElementById('loginButton');
-    const loginModal = document.getElementById('loginModal');
-    const loginCancel = document.getElementById('loginCancel');
-    const loginForm = document.getElementById('loginForm');
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
 
-    // Verificar si hay sesión activa
-    function hasSessionToken() {
-        return !!sessionStorage.getItem('session_token');
-    }
+            const nextType = input.type === 'password' ? 'text' : 'password';
+            input.type = nextType;
 
-    // Actualizar texto del botón según estado de sesión
-    function updateButtonText() {
-        if (loginButton) {
-            const buttonText = loginButton.childNodes[0]; // Primer nodo de texto
-            if (hasSessionToken()) {
-                buttonText.textContent = 'Ir al panel de Estudiante ';
-            } else {
-                buttonText.textContent = 'Ir al panel ';
+            if (btn && btn.classList) {
+                btn.classList.toggle('is-visible', nextType === 'text');
             }
         }
-    }
 
-    // Función para mostrar el modal de login
-    function showLoginModal() {
-        if (loginModal) {
-            loginModal.style.display = 'flex';
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-        document.body.style.overflow = 'hidden';
-        document.body.style.paddingRight = `${scrollbarWidth}px`;
-            
-            // Reset form si existe
-            if (loginForm) {
-                loginForm.reset();
-                const loginError = document.getElementById('loginError');
-                if (loginError) loginError.style.display = 'none';
-                
-                const loginSubmit = document.getElementById('loginSubmit');
-                const loginButtonText = document.getElementById('loginButtonText');
-                const loginSpinner = document.getElementById('loginSpinner');
-                if (loginSubmit) loginSubmit.disabled = false;
-                if (loginButtonText) loginButtonText.style.display = 'inline';
-                if (loginSpinner) loginSpinner.style.display = 'none';
-            }
-            
-            // Focus en el input de email
-            setTimeout(() => {
-                const emailInput = document.getElementById('loginEmail');
-                if (emailInput) {
-                    emailInput.focus();
-                }
-            }, 100);
-        }
-    }
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginButton = document.getElementById('loginButton');
+            const loginModal = document.getElementById('loginModal');
+            const loginCancel = document.getElementById('loginCancel');
+            const loginForm = document.getElementById('loginForm');
 
-    // Función para ocultar el modal
-    function hideLoginModal() {
-        if (loginModal) {
-            loginModal.style.display = 'none';
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = ''; // ← limpiar el padding
-        }
-    }
-
-    // Click en el botón "Ir al panel"
-    if (loginButton) {
-        loginButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Si ya hay sesión, redirigir al panel
-            if (hasSessionToken()) {
-                window.location.href = '/Crear-Noticias/Panel/index.html';
-                return;
-            }
-            
-            // Si no hay sesión, mostrar modal de login
-            showLoginModal();
-        });
-    }
-
-    // Manejar el envío del formulario de login
-    if (loginForm) {
-        loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            const loginError = document.getElementById('loginError');
-            const loginSubmit = document.getElementById('loginSubmit');
-            const loginButtonText = document.getElementById('loginButtonText');
-            const loginSpinner = document.getElementById('loginSpinner');
-            
-            if (!email || !password) {
-                if (loginError) {
-                    loginError.textContent = 'Por favor, completá todos los campos';
-                    loginError.style.display = 'block';
-                }
-                return;
+            // Verificar si hay sesión activa
+            function hasSessionToken() {
+                return !!sessionStorage.getItem('session_token');
             }
 
-            const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-            if (!isValidEmail) {
-                if (loginError) {
-                    loginError.textContent = 'Ingresá un correo válido';
-                    loginError.style.display = 'block';
-                }
-                return;
-            }
-            
-            // Mostrar loading
-            if (loginSubmit) loginSubmit.disabled = true;
-            if (loginButtonText) loginButtonText.style.display = 'none';
-            if (loginSpinner) loginSpinner.style.display = 'inline';
-            if (loginError) loginError.style.display = 'none';
-            
-            try {
-                const response = await fetch('/Crear-Noticias/api/auth/login.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        password: password
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok && data.success) {
-                    // Guardar token y datos del usuario
-                    sessionStorage.setItem('session_token', data.token);
-                    sessionStorage.setItem('user_info', JSON.stringify(data.usuario));
-                    sessionStorage.setItem('token_expires', data.expira_en);
-                    
-                    // Actualizar texto del botón
-                    updateButtonText();
-                    
-                    // Cerrar modal
-                    hideLoginModal();
-                    
-                    // Redirigir al panel
-                    window.location.href = '/Crear-Noticias/Panel/index.html';
-                } else {
-                    if (loginError) {
-                        loginError.textContent = data.error || 'Error al iniciar sesión';
-                        loginError.style.display = 'block';
+            // Actualizar texto del botón según estado de sesión
+            function updateButtonText() {
+                if (loginButton) {
+                    const buttonText = loginButton.childNodes[0]; // Primer nodo de texto
+                    if (hasSessionToken()) {
+                        buttonText.textContent = 'Ir al panel de Estudiante ';
+                    } else {
+                        buttonText.textContent = 'Ir al panel ';
                     }
                 }
-            } catch (error) {
-                console.error('Login error:', error);
-                if (loginError) {
-                    loginError.textContent = 'Error de conexión. Intentá de nuevo.';
-                    loginError.style.display = 'block';
+            }
+
+            // Función para mostrar el modal de login
+            function showLoginModal() {
+                if (loginModal) {
+                    loginModal.style.display = 'flex';
+                    document.body.style.overflow = 'auto';
+
+                    // Reset form si existe
+                    if (loginForm) {
+                        loginForm.reset();
+                        const loginError = document.getElementById('loginError');
+                        if (loginError) loginError.style.display = 'none';
+
+                        const loginSubmit = document.getElementById('loginSubmit');
+                        const loginButtonText = document.getElementById('loginButtonText');
+                        const loginSpinner = document.getElementById('loginSpinner');
+                        if (loginSubmit) loginSubmit.disabled = false;
+                        if (loginButtonText) loginButtonText.style.display = 'inline';
+                        if (loginSpinner) loginSpinner.style.display = 'none';
+                    }
+
+                    // Focus en el input de email
+                    setTimeout(() => {
+                        const emailInput = document.getElementById('loginEmail');
+                        if (emailInput) {
+                            emailInput.focus();
+                        }
+                    }, 100);
                 }
-            } finally {
-                // Resetear loading state
-                if (loginSubmit) loginSubmit.disabled = false;
-                if (loginButtonText) loginButtonText.style.display = 'inline';
-                if (loginSpinner) loginSpinner.style.display = 'none';
             }
-        });
-    }
 
-    // Cerrar modal con botón cancelar
-    if (loginCancel) {
-        loginCancel.addEventListener('click', function() {
-            hideLoginModal();
-        });
-    }
-
-    // Cerrar modal al hacer click en el backdrop
-    if (loginModal) {
-        loginModal.addEventListener('click', function(e) {
-            if (e.target === loginModal || e.target.classList.contains('login-backdrop')) {
-                hideLoginModal();
+            // Función para ocultar el modal
+            function hideLoginModal() {
+                if (loginModal) {
+                    loginModal.style.display = 'none';
+                }
             }
-        });
-    }
 
-    // Cerrar modal con tecla Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && loginModal && loginModal.style.display === 'flex') {
-            hideLoginModal();
-        }
-    });
+            // Click en el botón "Ir al panel"
+            if (loginButton) {
+                loginButton.addEventListener('click', function(e) {
+                    e.preventDefault();
 
-    // Actualizar texto del botón al cargar la página
-    updateButtonText();
+                    // Si ya hay sesión, redirigir al panel
+                    if (hasSessionToken()) {
+                        window.location.href = '/Crear-Noticias/Panel/index.html';
+                        return;
+                    }
 
-    // Detectar cambios en sessionStorage (por si se cierra sesión en otra pestaña)
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'session_token') {
+                    // Si no hay sesión, mostrar modal de login
+                    showLoginModal();
+                });
+            }
+
+            // Manejar el envío del formulario de login
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    const email = document.getElementById('loginEmail').value.trim();
+                    const password = document.getElementById('loginPassword').value;
+                    const loginError = document.getElementById('loginError');
+                    const loginSubmit = document.getElementById('loginSubmit');
+                    const loginButtonText = document.getElementById('loginButtonText');
+                    const loginSpinner = document.getElementById('loginSpinner');
+
+                    if (!email || !password) {
+                        if (loginError) {
+                            loginError.textContent = 'Por favor, completá todos los campos';
+                            loginError.style.display = 'block';
+                        }
+                        return;
+                    }
+
+                    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                    if (!isValidEmail) {
+                        if (loginError) {
+                            loginError.textContent = 'Ingresá un correo válido';
+                            loginError.style.display = 'block';
+                        }
+                        return;
+                    }
+
+                    // Mostrar loading
+                    if (loginSubmit) loginSubmit.disabled = true;
+                    if (loginButtonText) loginButtonText.style.display = 'none';
+                    if (loginSpinner) loginSpinner.style.display = 'inline';
+                    if (loginError) loginError.style.display = 'none';
+
+                    try {
+                        const response = await fetch('/Crear-Noticias/api/auth/login.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                email: email,
+                                password: password
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            // Guardar token y datos del usuario
+                            sessionStorage.setItem('session_token', data.token);
+                            sessionStorage.setItem('user_info', JSON.stringify(data.usuario));
+                            sessionStorage.setItem('token_expires', data.expira_en);
+
+                            // Actualizar texto del botón
+                            updateButtonText();
+
+                            // Cerrar modal
+                            hideLoginModal();
+
+                            // Redirigir al panel
+                            window.location.href = '/Crear-Noticias/Panel/index.html';
+                        } else {
+                            if (loginError) {
+                                loginError.textContent = data.error || 'Error al iniciar sesión';
+                                loginError.style.display = 'block';
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Login error:', error);
+                        if (loginError) {
+                            loginError.textContent = 'Error de conexión. Intentá de nuevo.';
+                            loginError.style.display = 'block';
+                        }
+                    } finally {
+                        // Resetear loading state
+                        if (loginSubmit) loginSubmit.disabled = false;
+                        if (loginButtonText) loginButtonText.style.display = 'inline';
+                        if (loginSpinner) loginSpinner.style.display = 'none';
+                    }
+                });
+            }
+
+            // Cerrar modal con botón cancelar
+            if (loginCancel) {
+                loginCancel.addEventListener('click', function() {
+                    hideLoginModal();
+                });
+            }
+
+            // Cerrar modal al hacer click en el backdrop
+            if (loginModal) {
+                loginModal.addEventListener('click', function(e) {
+                    if (e.target === loginModal || e.target.classList.contains('login-backdrop')) {
+                        hideLoginModal();
+                    }
+                });
+            }
+
+            // Cerrar modal con tecla Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && loginModal && loginModal.style.display === 'flex') {
+                    hideLoginModal();
+                }
+            });
+
+            // Actualizar texto del botón al cargar la página
             updateButtonText();
-        }
-    });
 
-    // Actualizar al volver a la página (navegación hacia atrás/adelante)
-    window.addEventListener('pageshow', function() {
-        updateButtonText();
-    });
-});
-</script>
+            // Detectar cambios en sessionStorage (por si se cierra sesión en otra pestaña)
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'session_token') {
+                    updateButtonText();
+                }
+            });
+
+            // Actualizar al volver a la página (navegación hacia atrás/adelante)
+            window.addEventListener('pageshow', function() {
+                updateButtonText();
+            });
+        });
+    </script>
 </body>
 </html>

@@ -30,6 +30,16 @@ border: 2px solid #f1f5f9;
 background: #1d4ed8;
 }
 
+[data-sileo-description] {
+    color: #111111 !important; /* Texto claro por defecto */
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-sileo-description] {
+        color: #ffffffd6 !important; /* Texto blanco en modo oscuro */
+    }
+}
+
 /* Loading Screen */
 .loading-screen {
     position: fixed;
@@ -104,6 +114,8 @@ background: #1d4ed8;
 }
 
 .sidebar-logo-text {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
     font-size: 1.25rem;
     font-weight: 600;
     color: #0f172a;
@@ -248,19 +260,24 @@ ripple {
 }
 
 .content-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
     font-size: 1.875rem;
-    font-weight: bold;
     color: #0f172a;
     margin-bottom: 0.5rem;
 }
 
 .content-subtitle {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     color: #64748b;
     font-size: 1rem;
 }
 
 /* Add Button */
 .add-button {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     width: 100%;
     display: flex;
     align-items: center;
@@ -272,7 +289,6 @@ ripple {
     border-radius: 0.75rem;
     color: #64748b;
     font-size: 0.875rem;
-    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
     margin-bottom: 2rem;
@@ -297,8 +313,9 @@ ripple {
 }
 
 .form-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
     font-size: 1.25rem;
-    font-weight: 600;
     color: #0f172a;
     margin-bottom: 1.5rem;
 }
@@ -331,6 +348,46 @@ ripple {
     transition: all 0.2s;
 }
 
+.password-field {
+    position: relative;
+    width: 100%;
+}
+
+.password-field .form-input {
+    padding-right: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    color: #334155;
+}
+
+.password-icon-hide {
+    display: none;
+}
+
+.password-toggle.is-visible .password-icon-show {
+    display: none;
+}
+
+.password-toggle.is-visible .password-icon-hide {
+    display: inline;
+}
+
 .form-input:focus,
 .form-textarea:focus {
     outline: none;
@@ -350,6 +407,8 @@ ripple {
 }
 
 .form-hint {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     font-size: 0.75rem;
     color: #64748b;
     margin-top: 0.5rem;
@@ -428,37 +487,41 @@ ripple {
 }
 
 .btn-secondary {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     padding: 0.75rem 1.5rem;
     border: 1px solid #e5e7eb;
     background: white;
     border-radius: 0.75rem;
     color: #64748b;
     font-size: 0.875rem;
-    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
 }
 
 .btn-secondary:hover {
+    padding: 0.75rem 2.15rem;
     background-color: #f9fafb;
 }
 
 .btn-primary {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 2rem;
+    padding: 0.75rem 1.5rem;
     background-color: #2563eb;
     border: none;
     border-radius: 0.75rem;
     color: white;
     font-size: 0.875rem;
-    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
 }
 
 .btn-primary:hover {
+    padding: 0.75rem 2.15rem;
     background-color: #1d4ed8;
 }
 
@@ -575,6 +638,8 @@ ripple {
 }
 
 .users-delete-btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -584,7 +649,6 @@ ripple {
     border-radius: 0.75rem;
     color: #0f172a;
     font-size: 0.875rem;
-    font-weight: 500;
     cursor: pointer;
     transition: background-color 0.15s, color 0.15s, border-color 0.15s;
 }
@@ -601,13 +665,14 @@ ripple {
 }
 
 .users-clear-btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     padding: 0.5rem 0.75rem;
     border: 1px solid #e5e7eb;
     background: white;
     border-radius: 0.75rem;
     color: #0f172a;
     font-size: 0.875rem;
-    font-weight: 500;
     cursor: pointer;
     transition: background-color 0.15s, color 0.15s, border-color 0.15s;
 }
@@ -667,8 +732,9 @@ ripple {
 }
 
 .item-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     font-size: 1rem;
-    font-weight: 600;
     color: #0f172a;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -676,6 +742,8 @@ ripple {
 }
 
 .item-meta {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
     font-size: 0.875rem;
     color: #64748b;
     margin-top: 0.25rem;
@@ -843,13 +911,16 @@ ripple {
 }
 
 .delete-modal-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
     font-size: 1.75rem;
-    font-weight: 800;
     color: #0f172a;
     margin: 0;
 }
 
 .delete-modal-subtitle {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     font-size: 1rem;
     color: #64748b;
     margin: 0;
@@ -939,13 +1010,16 @@ ripple {
 }
 
 .modal-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
     font-size: 1.5rem;
-    font-weight: 700;
     color: #0f172a;
     margin: 0;
 }
 
 .modal-subtitle {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     font-size: 0.875rem;
     color: #64748b;
     margin: 0.25rem 0 0 0;
@@ -964,11 +1038,12 @@ ripple {
 }
 
 .form-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    font-weight: 500;
     color: #334155;
     margin-bottom: 0.5rem;
 }
@@ -1012,11 +1087,12 @@ ripple {
 
 .btn-cancel,
 .btn-save {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     flex: 1;
     padding: 0.75rem 1.5rem;
     border-radius: 0.75rem;
     font-size: 0.875rem;
-    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
     border: none;

@@ -151,11 +151,11 @@ cardItemTemplate.innerHTML = `
     .media-dot.active{background:rgba(255,255,255,0.95);}
 
     card-title{
+        font-family: 'Nunito', sans-serif;
         font-size:32px;
         font-weight:500;
         line-height:0.95;
-        color:rgba(0, 0, 0, 0.8);
-        font-family: "Onest", sans-serif;
+        color:rgba(0, 0, 0, 0.8);   
     }
     event-date{
         font-size:16px;
@@ -164,6 +164,7 @@ cardItemTemplate.innerHTML = `
     }
 
     card-description{
+        font-family: 'Nunito', sans-serif;
         line-height:1.5;
         font-size:16px;
         color:rgba(0, 0, 0, 0.8);
