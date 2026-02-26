@@ -115,7 +115,7 @@
                             Mantente informado sobre las últimas noticias y eventos de nuestra comunidad educativa.
                         </p>
                         <div class="hero-buttons">
-<!--                             <a href="/Crear-Noticias/Noticias/index.html" class="btn btn-primary">
+                             <!-- <a href="/Crear-Noticias/Noticias/index.html" class="btn   
                                 <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
                                     <path d="M18 14h-8"></path>
@@ -229,7 +229,7 @@
     </section>
 
     <!-- Modal de Login -->
-    <div id="loginModal" class="login-modal" style="display: none;">
+    <div id="loginModal" class="login-modal">
         <div class="login-backdrop"></div>
         <div class="login-container">
             <div class="login-card">
@@ -302,6 +302,7 @@
 
     <script src="/Crear-Noticias/header.js"></script>
     <script src="/Crear-Noticias/wather.js"></script>
+    <script src="/Crear-Noticias/loginModalAnim.js"></script>
 
     <!-- HTML del botón (antes de </body>) -->
     <button id="scrollToTop" class="scroll-to-top" aria-label="Volver arriba">
@@ -372,41 +373,82 @@ window.addEventListener('scroll', () => {
                 }
             }
 
+            // Si header.js ya gestiona la modal, evitamos listeners duplicados (cancelar/backdrop/escape/submit)
+            if (window.__loginModalManagedByHeader) {
+                // CTA "Ir al panel" (este botón no lo maneja header.js)
+                if (loginButton) {
+                    loginButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+
+                        if (hasSessionToken()) {
+                            window.location.href = '/Crear-Noticias/Panel/index.html';
+                            return;
+                        }
+
+                        // Mostrar modal de login
+                        if (window.loginModalAnim && typeof window.loginModalAnim.open === 'function') {
+                            window.loginModalAnim.open(loginButton);
+                        } else {
+                            loginModal.classList.add('active');
+                        }
+                    });
+                }
+
+                updateButtonText();
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'session_token') updateButtonText();
+                });
+                window.addEventListener('pageshow', function() {
+                    updateButtonText();
+                });
+                return;
+            }
+
             // Función para mostrar el modal de login
             function showLoginModal() {
-                if (loginModal) {
-                    loginModal.style.display = 'flex';
-                    document.body.style.overflow = 'auto';
+                if (!loginModal) return;
 
-                    // Reset form si existe
-                    if (loginForm) {
-                        loginForm.reset();
-                        const loginError = document.getElementById('loginError');
-                        if (loginError) loginError.style.display = 'none';
+                document.body.style.overflow = 'auto';
 
-                        const loginSubmit = document.getElementById('loginSubmit');
-                        const loginButtonText = document.getElementById('loginButtonText');
-                        const loginSpinner = document.getElementById('loginSpinner');
-                        if (loginSubmit) loginSubmit.disabled = false;
-                        if (loginButtonText) loginButtonText.style.display = 'inline';
-                        if (loginSpinner) loginSpinner.style.display = 'none';
-                    }
-
-                    // Focus en el input de email
-                    setTimeout(() => {
-                        const emailInput = document.getElementById('loginEmail');
-                        if (emailInput) {
-                            emailInput.focus();
-                        }
-                    }, 100);
+                if (window.loginModalAnim && typeof window.loginModalAnim.open === 'function') {
+                    window.loginModalAnim.open(loginButton);
+                } else {
+                    loginModal.classList.add('active');
                 }
+
+                // Reset form si existe
+                if (loginForm) {
+                    loginForm.reset();
+                    const loginError = document.getElementById('loginError');
+                    if (loginError) loginError.style.display = 'none';
+
+                    const loginSubmit = document.getElementById('loginSubmit');
+                    const loginButtonText = document.getElementById('loginButtonText');
+                    const loginSpinner = document.getElementById('loginSpinner');
+                    if (loginSubmit) loginSubmit.disabled = false;
+                    if (loginButtonText) loginButtonText.style.display = 'inline';
+                    if (loginSpinner) loginSpinner.style.display = 'none';
+                }
+
+                // Focus en el input de email
+                setTimeout(() => {
+                    const emailInput = document.getElementById('loginEmail');
+                    if (emailInput) {
+                        emailInput.focus();
+                    }
+                }, 100);
             }
 
             // Función para ocultar el modal
             function hideLoginModal() {
-                if (loginModal) {
-                    loginModal.style.display = 'none';
+                if (!loginModal) return;
+
+                if (window.loginModalAnim && typeof window.loginModalAnim.close === 'function') {
+                    window.loginModalAnim.close();
+                    return;
                 }
+
+                loginModal.classList.remove('active');
             }
 
             // Click en el botón "Ir al panel"
@@ -527,7 +569,7 @@ window.addEventListener('scroll', () => {
 
             // Cerrar modal con tecla Escape
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && loginModal && loginModal.style.display === 'flex') {
+                if (e.key === 'Escape' && loginModal && loginModal.classList.contains('active')) {
                     hideLoginModal();
                 }
             });
@@ -548,5 +590,6 @@ window.addEventListener('scroll', () => {
             });
         });
     </script>
+
 </body>
 </html>

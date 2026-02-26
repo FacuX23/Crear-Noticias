@@ -393,7 +393,6 @@ background: #1d4ed8;
     background-color: white;
     color: #0f172a;
     border: 2px solid #e2e8f0;
-    box-shadow: 0px 0px 20px -10px #b3b3b3;
 }
 
 .btn-secondary2:hover {
@@ -454,10 +453,14 @@ background: #1d4ed8;
     right: 0;
     bottom: 0;
     z-index: 9999;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 1rem;
+}
+
+.login-modal.active {
+    display: flex;
 }
 
 .login-backdrop {
@@ -474,29 +477,6 @@ background: #1d4ed8;
     position: relative;
     width: 100%;
     max-width: 400px;
-    animation: loginSlideIn 0.3s ease-out;
-}
-
-@keyframes loginSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes loginSlideOut {
-    from {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
-    }
 }
 
 .login-card {
@@ -530,6 +510,16 @@ background: #1d4ed8;
 
 .login-form {
     padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  /* el selector exacto es el que tenga backdrop-filter */
+  .login-modal-backdrop,
+  .modal-backdrop,
+  .login-modal {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }
 
 .form-group {
@@ -654,19 +644,17 @@ background: #1d4ed8;
 .btn-secondary {
     background-color: #f1f5f9;
     color: #475569;
-    border: 1px solid #e2e8f0;
+    border: 2px solid #e5e7eb;
 }
 
 .btn-secondary2 {
     font-family: 'Nunito', sans-serif;
     font-weight: 700;
-    background-color: #f1f5f9;
     color: #475569;
-    border: 1px solid #e2e8f0;
 }
 
 .btn-secondary2:hover {
-    background-color: #e2e8f0;
+    background-color: #f8fafc;
 }
 
 .btn-secondary:hover {

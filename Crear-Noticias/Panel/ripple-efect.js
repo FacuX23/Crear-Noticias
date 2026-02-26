@@ -13,10 +13,8 @@ document.addEventListener('mousedown', (event) => {
     ripples.style.top = y - size/2 + 'px';
     ripples.style.width = ripples.style.height = size + 'px';
     
-    // Agregar al botón
     target.appendChild(ripples);
     
-    // Marcar el ripple para que no se elimine
     ripples.setAttribute('data-ripple-preserve', 'true');
     
     setTimeout(() => {

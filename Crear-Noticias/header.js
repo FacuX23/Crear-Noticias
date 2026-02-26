@@ -1,5 +1,8 @@
 // Toggle mobile menu y login modal
 document.addEventListener('DOMContentLoaded', function() {
+
+    window.__loginModalManagedByHeader = true;
+
     const mobileMenuButton = document.getElementById('mobileMenuButton');
     const mobileNav = document.getElementById('mobileNav');
     const loginModal = document.getElementById('loginModal');
@@ -9,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginSubmit = document.getElementById('loginSubmit');
     const loginButtonText = document.getElementById('loginButtonText');
     const loginSpinner = document.getElementById('loginSpinner');
+
+    let lastLoginOriginEl = null;
 
     // Mobile menu functionality
     if (mobileMenuButton && mobileNav) {
@@ -35,10 +40,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Login modal functionality
-    function showLoginModal() {
+    function showLoginModal(originEl) {
         if (loginModal) {
-            loginModal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = '';
+
+            lastLoginOriginEl = originEl || lastLoginOriginEl || null;
+
+            if (window.loginModalAnim && typeof window.loginModalAnim.open === 'function') {
+                window.loginModalAnim.open(lastLoginOriginEl);
+            } else {
+                loginModal.classList.add('active');
+            }
             
             // Reset form
             if (loginForm) {
@@ -61,7 +73,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function hideLoginModal() {
         if (loginModal) {
-            loginModal.style.display = 'none';
+            if (window.loginModalAnim && typeof window.loginModalAnim.close === 'function') {
+                window.loginModalAnim.close();
+            } else {
+                loginModal.classList.remove('active');
+            }
             document.body.style.overflow = '';
         }
     }
@@ -114,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                showLoginModal();
+                showLoginModal(button);
             });
         });
     }
@@ -206,18 +222,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Close modal when clicking backdrop
-    if (loginModal) {
-        loginModal.addEventListener('click', function(e) {
-            if (e.target === loginModal || e.target.classList.contains('login-backdrop')) {
-                hideLoginModal();
-            }
-        });
-    }
-
     // Close modal with Escape key
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && loginModal && loginModal.style.display === 'flex') {
+        if (e.key === 'Escape' && loginModal && loginModal.classList.contains('active')) {
             hideLoginModal();
         }
     });

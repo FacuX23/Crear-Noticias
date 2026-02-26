@@ -421,10 +421,14 @@ background: #1d4ed8;
     right: 0;
     bottom: 0;
     z-index: 9999;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 1rem;
+}
+
+.login-modal.active {
+    display: flex;
 }
 
 .login-backdrop {
@@ -441,7 +445,7 @@ background: #1d4ed8;
     position: relative;
     width: 100%;
     max-width: 400px;
-    animation: loginSlideIn 0.3s ease-out;
+    animation: none;
 }
 
 @keyframes loginSlideIn {
