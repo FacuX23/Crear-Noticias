@@ -28,6 +28,13 @@ if ($auth_header && preg_match('/Bearer\s+(.*)$/i', $auth_header, $matches)) {
 try {
     $database = new Database();
     $conn = $database->getConnection();
+
+    // Limpieza automática: eliminar noticias vencidas (fecha_expiracion < hoy)
+    try {
+        $conn->exec("DELETE FROM noticias WHERE fecha_expiracion IS NOT NULL AND fecha_expiracion < CURDATE()");
+    } catch (PDOException $exception) {
+        // noop
+    }
     
     // Verificar token si se proporciona
     if ($auth_header) {
@@ -47,6 +54,7 @@ try {
                    COALESCE(u.nombre, u.usuario) as autor_nombre, u.rol as autor_rol
             FROM noticias n 
             JOIN usuarios u ON n.autor_id = u.id 
+            WHERE n.fecha_expiracion IS NULL OR n.fecha_expiracion >= CURDATE()
             ORDER BY n.created_at DESC, n.id DESC
         ");
     } else {
@@ -56,7 +64,7 @@ try {
                    COALESCE(u.nombre, u.usuario) as autor_nombre, u.rol as autor_rol
             FROM noticias n 
             JOIN usuarios u ON n.autor_id = u.id 
-            WHERE n.activa = 1 
+            WHERE n.activa = 1 AND (n.fecha_expiracion IS NULL OR n.fecha_expiracion >= CURDATE())
             ORDER BY n.created_at DESC, n.id DESC
         ");
     }

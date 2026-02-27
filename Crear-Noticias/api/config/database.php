@@ -53,7 +53,7 @@ class Database {
                 contenido TEXT NOT NULL,
                 media_items JSON,
                 created_date DATE NOT NULL,
-                fecha_expiracion DATE NOT NULL,
+                fecha_expiracion DATE NULL,
                 activa BOOLEAN DEFAULT TRUE,
                 autor_id INT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -72,7 +72,7 @@ class Database {
                 lugar VARCHAR(255) NOT NULL,
                 media_items JSON,
                 created_date DATE NOT NULL,
-                fecha_expiracion DATE NOT NULL,
+                fecha_expiracion DATE NULL,
                 activo BOOLEAN DEFAULT TRUE,
                 autor_id INT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -124,6 +124,18 @@ class Database {
             // Migración suave: ampliar enum de rol para incluir director
             try {
                 $conn->exec("ALTER TABLE usuarios MODIFY COLUMN rol ENUM('alumno','profesor','director') NOT NULL");
+            } catch (PDOException $exception) {
+                // noop
+            }
+
+            // Migración suave: permitir fecha_expiracion NULL (siempre visible)
+            try {
+                $conn->exec("ALTER TABLE noticias MODIFY COLUMN fecha_expiracion DATE NULL");
+            } catch (PDOException $exception) {
+                // noop
+            }
+            try {
+                $conn->exec("ALTER TABLE eventos MODIFY COLUMN fecha_expiracion DATE NULL");
             } catch (PDOException $exception) {
                 // noop
             }

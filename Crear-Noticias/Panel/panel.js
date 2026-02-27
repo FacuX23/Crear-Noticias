@@ -353,10 +353,41 @@ function setupEventListeners() {
     document.getElementById('inputVideo').addEventListener('change', (e) => handleFileUpload(e, 'video'));
 
     // Días de visibilidad
-    document.getElementById('inputDias').addEventListener('input', function() {
-        const dias = this.value || 30;
-        document.getElementById('hintDias').textContent = `Se eliminará automáticamente después de ${dias} días`;
-    });
+    const inputDias = document.getElementById('inputDias');
+    const checkDiasVisibilidad = document.getElementById('checkDiasVisibilidad');
+    const hintDias = document.getElementById('hintDias');
+
+    function updateDiasVisibilidadUI() {
+        if (!inputDias || !checkDiasVisibilidad || !hintDias) return;
+
+        const enabled = !!checkDiasVisibilidad.checked;
+        inputDias.disabled = !enabled;
+
+        if (!enabled) {
+            hintDias.textContent = 'Siempre visible';
+            return;
+        }
+
+        const dias = Number.parseInt(inputDias.value || '30', 10);
+        const diasSafe = Number.isFinite(dias) && dias > 0 ? dias : 30;
+        hintDias.textContent = `Se eliminará automáticamente después de ${diasSafe} días`;
+    }
+
+    if (checkDiasVisibilidad) {
+        checkDiasVisibilidad.addEventListener('change', function() {
+            syncFormDataFromInputs();
+            updateDiasVisibilidadUI();
+        });
+    }
+
+    if (inputDias) {
+        inputDias.addEventListener('input', function() {
+            syncFormDataFromInputs();
+            updateDiasVisibilidadUI();
+        });
+    }
+
+    updateDiasVisibilidadUI();
 
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
@@ -831,8 +862,6 @@ function closeDeleteUserModal(done) {
             if (completed) return;
             completed = true;
             clearTimeout(safetyTimeout);
-            if (backdrop) gsap.set(backdrop, { clearProps: 'all', opacity: 0 });
-            gsap.set(container, { clearProps: 'all' });
             finish();
         }
     });
@@ -899,7 +928,6 @@ function openDeleteUserModal(userId, originEl) {
         scale: true,
         absolute: false,
         onStart() {
-            positionDeleteModalNearOrigin(container, originEl);
             gsap.from(container, { opacity: 0, duration: 0.5, ease: easeMain });
         }
     });
@@ -1275,6 +1303,7 @@ function openNewForm() {
             imagen_url: '',
             video_url: '',
             dias_visibilidad: 30,
+            dias_visibilidad_enabled: false,
             activa: true
         };
     } else {
@@ -1289,6 +1318,7 @@ function openNewForm() {
             imagen_url: '',
             video_url: '',
             dias_visibilidad: 30,
+            dias_visibilidad_enabled: false,
             activo: true
         };
     }
@@ -1308,6 +1338,24 @@ function openEditForm(itemId, originEl) {
     closeFormImmediate();
     editingItem = item;
     formData = { ...item };
+
+    if (formData.dias_visibilidad_enabled == null) {
+        formData.dias_visibilidad_enabled = !!formData.fecha_expiracion;
+    }
+    if (formData.dias_visibilidad == null) {
+        const createdDateRaw = String(formData.created_date || '').trim();
+        const expRaw = String(formData.fecha_expiracion || '').trim();
+        if (createdDateRaw && expRaw) {
+            const created = new Date(`${createdDateRaw}T00:00:00`);
+            const exp = new Date(`${expRaw}T00:00:00`);
+            const diffMs = exp.getTime() - created.getTime();
+            const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+            if (Number.isFinite(diffDays) && diffDays > 0) {
+                formData.dias_visibilidad = diffDays;
+            }
+        }
+    }
+    
     if (!Array.isArray(formData.media_items)) {
         formData.media_items = [];
         if (formData.imagen_url) formData.media_items.push({ type: 'image', url: formData.imagen_url });
@@ -1326,6 +1374,8 @@ function updateFormUI() {
     const inputTitulo = document.getElementById('inputTitulo');
     const inputContenido = document.getElementById('inputContenido');
     const inputDias = document.getElementById('inputDias');
+    const checkDiasVisibilidad = document.getElementById('checkDiasVisibilidad');
+    const hintDias = document.getElementById('hintDias');
 
     const eventoFields = document.getElementById('eventoFields');
     const saveBtnText = document.getElementById('saveBtnText');
@@ -1345,6 +1395,24 @@ function updateFormUI() {
     // Fields
     inputTitulo.value = formData.titulo || '';
     inputDias.value = formData.dias_visibilidad || 30;
+
+    if (checkDiasVisibilidad) {
+        checkDiasVisibilidad.checked = !!formData.dias_visibilidad_enabled;
+    }
+
+    if (inputDias && checkDiasVisibilidad) {
+        inputDias.disabled = !checkDiasVisibilidad.checked;
+    }
+
+    if (hintDias) {
+        if (checkDiasVisibilidad && !checkDiasVisibilidad.checked) {
+            hintDias.textContent = 'Siempre visible';
+        } else {
+            const dias = Number.parseInt(inputDias.value || '30', 10);
+            const diasSafe = Number.isFinite(dias) && dias > 0 ? dias : 30;
+            hintDias.textContent = `Se eliminará automáticamente después de ${diasSafe} días`;
+        }
+    }
 
     if (activeTab === 'noticias') {
         labelContenido.textContent = 'Contenido';
@@ -1767,8 +1835,13 @@ function syncFormDataFromInputs() {
     const inputTitulo = document.getElementById('inputTitulo');
     const inputContenido = document.getElementById('inputContenido');
     const inputDias = document.getElementById('inputDias');
+    const checkDiasVisibilidad = document.getElementById('checkDiasVisibilidad');
 
     if (inputTitulo) formData.titulo = inputTitulo.value;
+
+    if (checkDiasVisibilidad) {
+        formData.dias_visibilidad_enabled = !!checkDiasVisibilidad.checked;
+    }
 
     if (inputDias) {
         const v = parseInt(inputDias.value);
@@ -1882,6 +1955,7 @@ async function handleSave() {
 
     formData.titulo = document.getElementById('inputTitulo').value;
     formData.dias_visibilidad = parseInt(document.getElementById('inputDias').value) || 30;
+    formData.dias_visibilidad_enabled = !!(document.getElementById('checkDiasVisibilidad') && document.getElementById('checkDiasVisibilidad').checked);
 
     if (activeTab === 'noticias') {
         formData.contenido = document.getElementById('inputContenido').value;
@@ -1983,7 +2057,8 @@ async function handleSave() {
         const apiData = {
             titulo: formData.titulo,
             media_items: persistMediaItems,
-            dias_visibilidad: formData.dias_visibilidad
+            dias_visibilidad: formData.dias_visibilidad,
+            dias_visibilidad_enabled: !!formData.dias_visibilidad_enabled
         };
 
         if (activeTab === 'noticias') {
@@ -2025,12 +2100,19 @@ async function handleSave() {
         if (result.success) {
             if (window.fireToast) {
                 const isNoticias = activeTab === 'noticias';
-                const entidad = isNoticias ? 'Noticia' : 'Evento';
-                const accion = editingItem
-                    ? (isNoticias ? 'actualizada' : 'actualizado')
-                    : (isNoticias ? 'Creada' : 'Creado');
-                window.fireToast('success', `${entidad} ${accion}`, 'Los cambios se guardaron correctamente.');
+
+                if (!editingItem) {
+                    const msg = isNoticias
+                        ? 'La noticia fue creada correctamente'
+                        : 'El evento fue creado correctamente';
+                    window.fireToast('success', msg, '');
+                } else {
+                    const entidad = isNoticias ? 'Noticia' : 'Evento';
+                    const accion = isNoticias ? 'actualizada' : 'actualizado';
+                    window.fireToast('success', `${entidad} ${accion}`, 'Los cambios se guardaron correctamente.');
+                }
             }
+
             closeForm(() => {
                 loadData();
             });

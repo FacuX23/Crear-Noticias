@@ -28,6 +28,13 @@ if ($auth_header && preg_match('/Bearer\s+(.*)$/i', $auth_header, $matches)) {
 try {
     $database = new Database();
     $conn = $database->getConnection();
+
+    // Limpieza automática: eliminar eventos vencidos (fecha_expiracion < hoy)
+    try {
+        $conn->exec("DELETE FROM eventos WHERE fecha_expiracion IS NOT NULL AND fecha_expiracion < CURDATE()");
+    } catch (PDOException $exception) {
+        // noop
+    }
     
     // Verificar token si se proporciona
     if ($auth_header) {
@@ -48,6 +55,7 @@ try {
                    COALESCE(u.nombre, u.usuario) as autor_nombre, u.rol as autor_rol
             FROM eventos e 
             JOIN usuarios u ON e.autor_id = u.id 
+            WHERE e.fecha_expiracion IS NULL OR e.fecha_expiracion >= CURDATE()
             ORDER BY e.created_at DESC, e.id DESC
         ");
     } else {
@@ -58,7 +66,7 @@ try {
                    COALESCE(u.nombre, u.usuario) as autor_nombre, u.rol as autor_rol
             FROM eventos e 
             JOIN usuarios u ON e.autor_id = u.id 
-            WHERE e.activo = 1 
+            WHERE e.activo = 1 AND (e.fecha_expiracion IS NULL OR e.fecha_expiracion >= CURDATE())
             ORDER BY e.created_at DESC, e.id DESC
         ");
     }

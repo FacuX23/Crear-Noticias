@@ -80,6 +80,7 @@ try {
     $lugar = trim($data['lugar'] ?? '');
     $media_items = isset($data['media_items']) ? json_encode($data['media_items']) : null;
     $dias_visibilidad = intval($data['dias_visibilidad'] ?? 30);
+    $dias_visibilidad_enabled = (bool)($data['dias_visibilidad_enabled'] ?? false);
     
     // Validar fecha de evento
     if (!$fecha_evento) {
@@ -89,7 +90,10 @@ try {
     }
     
     // Calcular nueva fecha de expiración
-    $fecha_expiracion = date('Y-m-d', strtotime("+$dias_visibilidad days"));
+    $fecha_expiracion = null;
+    if ($dias_visibilidad_enabled) {
+        $fecha_expiracion = date('Y-m-d', strtotime("+$dias_visibilidad days"));
+    }
     
     // Actualizar evento
     $stmt = $conn->prepare("
