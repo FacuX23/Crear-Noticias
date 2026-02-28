@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - Escuela Crear</title>
     <link rel="stylesheet" href="/Crear-Noticias/Panel/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
     <link rel="icon" href="/Crear-Noticias/logo.png" type="image/png">
 
         <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Calistoga&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    
 </head>
 <body>
     <div class="mobile-top-nav" aria-label="Navegación">
@@ -216,6 +218,16 @@
                             />
                             <p class="form-hint">Este nombre aparecerá en tus publicaciones</p>
                         </div>
+
+                        <!-- Tipo de usuario (read-only) -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                Tipo de usuario
+                            </label>
+                            <div class="form-input-readonly" id="userTipo">-</div>
+                            <p class="form-hint">Este campo no se puede modificar</p>
+                        </div>
                     </div>
 
                     <!-- Buttons -->
@@ -372,7 +384,10 @@
                             <!-- Contenido/Descripción -->
                             <div class="form-group">
                                 <label class="form-label" id="labelContenido">Contenido</label>
-                                <textarea id="inputContenido" class="form-textarea" rows="4" placeholder="Escribe aquí..."></textarea>
+                                <div class="rich-editor-wrapper">
+                                    <div id="richEditor" class="rich-editor"></div>
+                                    <textarea id="inputContenido" class="form-textarea" rows="4" placeholder="Escribe aquí..." style="display:none;"></textarea>
+                                </div>
                             </div>
 
                             <!-- Campos de Evento (ocultos por defecto) -->
@@ -521,6 +536,7 @@
         </main>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
     <script src="/Crear-Noticias/Panel/panel.js"></script>  
     <script src="/Crear-Noticias/header.js"></script>
 
@@ -661,59 +677,6 @@
             return tl
         }
 
-        function animateFullscreenCloseToRect({ modal, container, originEl, backdrop }) {
-            const originRect = originEl.getBoundingClientRect()
-            const currentRect = container.getBoundingClientRect()
-
-            gsap.set(container, {
-                position: 'fixed',
-                top: currentRect.top,
-                left: currentRect.left,
-                width: currentRect.width,
-                height: currentRect.height,
-                transform: 'none',
-                overflow: 'hidden',
-            })
-
-            const tl = gsap.timeline()
-
-            tl.to(container, {
-                duration: 0.5,
-                ease: closeEase1,
-                borderRadius: '400px',
-            }, 0)
-            tl.to(container, {
-                duration: 0.5,
-                ease: closeEase2,
-                filter: 'blur(32px)',
-                scale: 0.985,
-            }, 0)
-
-            tl.to(container, {
-                opacity: 0,
-                duration: 0.5,
-                ease: closeEase1,
-            }, 0)
-
-            tl.to(container, {
-                top: originRect.top,
-                left: originRect.left,
-                width: originRect.width,
-                height: originRect.height,
-                duration: 0.5,
-                ease: easeMain,
-            }, 0)
-
-            tl.add(() => {
-                modal.classList.remove('active')
-                gsap.set(container, { clearProps: 'all' })
-                if (backdrop) gsap.set(backdrop, { clearProps: 'all' })
-                accountOriginEl = null
-            })
-
-            return tl
-        }
-
         function openAccountModal(originEl) {
             const button = originEl || document.getElementById('accountBtn')
             accountOriginEl = button
@@ -723,15 +686,26 @@
             const content = modal.querySelector('.modal-content')
             const closeBtn = modal.querySelector('.modal-close-btn')
 
+
             const isMobile = window.matchMedia('(max-width: 768px)').matches
 
             let userInfo = null
             try { userInfo = JSON.parse(sessionStorage.getItem('user_info') || 'null') } catch (e) { userInfo = null }
             const displayName = (userInfo && (userInfo.nombre || userInfo.usuario)) ? (userInfo.nombre || userInfo.usuario) : ''
+            const roleRaw = (userInfo && userInfo.rol) ? String(userInfo.rol) : ''
+            const roleNorm = roleRaw.trim().toLowerCase()
+            const roleLabel = roleNorm === 'alumno'
+                ? 'Alumno'
+                : (roleNorm === 'director'
+                    ? 'Director'
+                    : (roleNorm ? (roleNorm.charAt(0).toUpperCase() + roleNorm.slice(1)) : '-'))
             const emailEl = document.getElementById('userEmail')
+            const tipoEl = document.getElementById('userTipo')
             const nameEl = document.getElementById('nombreUsuario')
             if (emailEl) emailEl.textContent = (userInfo && userInfo.email) ? String(userInfo.email) : ''
+            if (tipoEl) tipoEl.textContent = roleLabel
             if (nameEl) nameEl.value = displayName
+
 
             modal.classList.add('active')
 
@@ -788,15 +762,15 @@
                 scale: true,
                 absolute: false,
                 onStart() {
-                    gsap.from(backdrop, { 
-                        opacity: 1, 
-                        duration: 0.3, 
-                        ease: 'power2.in' 
+                    gsap.from(backdrop, {
+                        opacity: 1,
+                        duration: 0.3,
+                        ease: 'power2.in'
                     })
                     gsap.from(container, {
                         opacity: 0,
                         duration: 0.7,
-                        filter: 'blur(8px)',
+                        filter: 'none',
                         ease: easeMain,
                     })
                     gsap.from(container, {
@@ -860,7 +834,7 @@
                     gsap.to(container, {
                         duration: 0.5,
                         ease: closeEase2,
-                        filter: 'blur(32px)',
+                        filter: 'none',
                     })
                     gsap.to(container, {
                         opacity: 0,
@@ -923,6 +897,16 @@
 
                     const emailEl = document.getElementById('userEmail')
                     if (emailEl) emailEl.textContent = (result.usuario.email) ? String(result.usuario.email) : ''
+
+                    const tipoEl = document.getElementById('userTipo')
+                    const roleRaw = (result.usuario && result.usuario.rol) ? String(result.usuario.rol) : ''
+                    const roleNorm = roleRaw.trim().toLowerCase()
+                    const roleLabel = roleNorm === 'alumno'
+                        ? 'Alumno'
+                        : (roleNorm === 'director'
+                            ? 'Director'
+                            : (roleNorm ? (roleNorm.charAt(0).toUpperCase() + roleNorm.slice(1)) : '-'))
+                    if (tipoEl) tipoEl.textContent = roleLabel
                 }
 
                 closeAccountModal()
@@ -935,6 +919,7 @@
             }
         }
     </script>
+
     <script src="ripple-efect.js"></script>
 
     <!-- HTML del botón (antes de </body>) -->

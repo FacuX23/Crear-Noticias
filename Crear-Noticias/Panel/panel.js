@@ -14,6 +14,8 @@ let deleteUserPendingId = null;
 let deleteUserOriginElement = null;
 let vaciarAlumnosOriginElement = null;
 
+let richEditor = null;
+
 const STORAGE_KEYS = {
     noticias: 'crearNoticias_data_noticias',
     eventos: 'crearNoticias_data_eventos'
@@ -107,11 +109,92 @@ async function getObjectUrlForStorageId(storageId) {
 // Inicializar
 document.addEventListener('DOMContentLoaded', function() {
     ensureSileoReady();
+    initRichEditor();
     setupEventListeners();
     setupUsersUi();
     updateMobileNavGrid();
     loadData();
 });
+
+function initRichEditor() {
+    const editorEl = document.getElementById('richEditor');
+    const textarea = document.getElementById('inputContenido');
+
+    if (!editorEl || !textarea) return;
+
+    if (typeof window.Quill !== 'function') {
+        editorEl.style.display = 'none';
+        textarea.style.display = '';
+        return;
+    }
+
+    if (richEditor) return;
+
+    richEditor = new window.Quill(editorEl, {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['link'],
+                ['clean']
+            ]
+        }
+    });
+
+    const syncToTextarea = () => {
+        const html = String(richEditor.root.innerHTML || '');
+        textarea.value = html;
+    };
+
+    richEditor.on('text-change', syncToTextarea);
+
+    // Sync initial content
+    try {
+        const initial = String(textarea.value || '');
+        if (initial) {
+            richEditor.clipboard.dangerouslyPasteHTML(initial);
+        } else {
+            richEditor.setText('');
+        }
+        syncToTextarea();
+    } catch (e) {
+        // noop
+    }
+}
+
+function setRichEditorHtml(html) {
+    const textarea = document.getElementById('inputContenido');
+    const safeHtml = html == null ? '' : String(html);
+    if (textarea) textarea.value = safeHtml;
+
+    if (!richEditor) return;
+    try {
+        if (safeHtml) {
+            richEditor.clipboard.dangerouslyPasteHTML(safeHtml);
+        } else {
+            richEditor.setText('');
+        }
+    } catch (e) {
+        // noop
+    }
+}
+
+function syncRichEditorToTextarea() {
+    if (!richEditor) return;
+    const textarea = document.getElementById('inputContenido');
+    if (!textarea) return;
+    textarea.value = String(richEditor.root.innerHTML || '');
+}
+
+function isRichEditorEmpty() {
+    if (richEditor) {
+        const text = String(richEditor.getText() || '').replace(/\s+/g, ' ').trim();
+        return text.length === 0;
+    }
+    const textarea = document.getElementById('inputContenido');
+    return !textarea || !String(textarea.value || '').trim();
+}
 
 function ensureSileoReady() {
     if (window.__sileo_loading) return;
@@ -743,6 +826,7 @@ async function handleDeleteUser(userId) {
             },
             body: JSON.stringify({ id: userId })
         });
+
         const payload = await resp.json().catch(() => ({}));
         if (!resp.ok || !payload.success) {
             throw new Error(payload.error || 'Error al eliminar usuario');
@@ -787,6 +871,7 @@ async function performVaciarAlumnos() {
                 'Authorization': `Bearer ${token}`
             }
         });
+
         const payload = await resp.json().catch(() => ({}));
         if (!resp.ok || !payload.success) {
             throw new Error(payload.error || 'Error al vaciar alumnos');
@@ -1416,11 +1501,13 @@ function updateFormUI() {
 
     if (activeTab === 'noticias') {
         labelContenido.textContent = 'Contenido';
-        inputContenido.value = formData.contenido || '';
+        if (inputContenido) inputContenido.value = formData.contenido || '';
+        setRichEditorHtml(formData.contenido || '');
         eventoFields.style.display = 'none';
     } else {
         labelContenido.textContent = 'Descripción';
-        inputContenido.value = formData.descripcion || '';
+        if (inputContenido) inputContenido.value = formData.descripcion || '';
+        setRichEditorHtml(formData.descripcion || '');
         eventoFields.style.display = 'grid';
 
         document.getElementById('inputFecha').value = formData.fecha_evento || '';
@@ -1644,7 +1731,7 @@ function closeFormImmediate() {
         const container = formModal.querySelector('.modal-container');
         const backdrop = formModal.querySelector('.modal-backdrop');
         if (container) window.gsap.set(container, { clearProps: 'all' });
-        if (backdrop) window.gsap.set(backdrop, { clearProps: 'all', opacity: 0  });
+        if (backdrop) window.gsap.set(backdrop, { clearProps: 'all', opacity: 0 });
     }
 
     editingItem = null;
@@ -1736,7 +1823,7 @@ function closeFormAnimated(done) {
         gsap.to(modalContainer, {
             duration: 0.5,
             ease: closeEase2,
-            filter: 'blur(32px)',
+            filter: 'none',
             scale: 0.985,
         });
         gsap.to(modalContainer, {
@@ -1793,7 +1880,7 @@ function closeFormAnimated(done) {
                 gsap.to(modalContainer, {
                     duration: 0.5,
                     ease: closeEase2,
-                    filter: 'blur(32px)',
+                    filter: 'none',
                 });
                 gsap.to(modalContainer, {
                     opacity: 0,
@@ -1950,6 +2037,8 @@ async function handleFileUpload(e, type) {
 async function handleSave() {
     if (isSaving || isUploading) return;
 
+    syncRichEditorToTextarea();
+
     const saveBtn = document.getElementById('saveBtn');
     const saveBtnText = document.getElementById('saveBtnText');
 
@@ -1974,7 +2063,7 @@ async function handleSave() {
         return;
     }
 
-    if (activeTab === 'noticias' && !formData.contenido) {
+    if (activeTab === 'noticias' && (isRichEditorEmpty() || !formData.contenido)) {
         ensureSileoReady();
         if (window.fireToast) {
             window.fireToast('info', 'Falta un dato', 'El contenido es obligatorio');
@@ -1982,7 +2071,7 @@ async function handleSave() {
         return;
     }
 
-    if (activeTab === 'eventos' && !formData.descripcion) {
+    if (activeTab === 'eventos' && (isRichEditorEmpty() || !formData.descripcion)) {
         ensureSileoReady();
         if (window.fireToast) {
             window.fireToast('info', 'Falta un dato', 'La descripción es obligatoria');
@@ -2284,7 +2373,7 @@ function closeDeleteModal(done) {
                 gsap.to(container, {
                     duration: 0.5,
                     ease: closeEase2,
-                    filter: 'blur(32px)',
+                    filter: 'none',
                 });
                 gsap.to(container, {
                     opacity: 0,
@@ -2402,7 +2491,7 @@ function openDeleteModal(itemId, originEl) {
             gsap.from(container, {
                 opacity: 0,
                 duration: 0.7,
-                filter: 'blur(8px)',
+                filter: 'none',
                 ease: easeMain,
             });
             gsap.from(container, {

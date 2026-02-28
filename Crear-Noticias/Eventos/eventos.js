@@ -2,6 +2,60 @@ const MEDIA_DB_NAME = 'crearNoticias_media_db';
 const MEDIA_DB_VERSION = 1;
 const MEDIA_STORE_NAME = 'media_files';
 
+function sanitizeRichText(inputHtml) {
+  const raw = String(inputHtml || '');
+  if (!raw) return '';
+
+  const allowedTags = new Set(['P', 'BR', 'STRONG', 'B', 'EM', 'I', 'U', 'A', 'UL', 'OL', 'LI', 'SPAN']);
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(`<div>${raw}</div>`, 'text/html');
+  const root = doc.body && doc.body.firstElementChild ? doc.body.firstElementChild : doc.body;
+  if (!root) return '';
+
+  const cleanNode = (node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return doc.createTextNode(node.nodeValue || '');
+    }
+
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      return doc.createTextNode('');
+    }
+
+    const tag = node.tagName;
+    if (!allowedTags.has(tag)) {
+      const frag = doc.createDocumentFragment();
+      Array.from(node.childNodes).forEach((child) => {
+        frag.appendChild(cleanNode(child));
+      });
+      return frag;
+    }
+
+    const el = doc.createElement(tag.toLowerCase());
+
+    if (tag === 'A') {
+      const href = String(node.getAttribute('href') || '').trim();
+      const safeHref = (/^(https?:\/\/|mailto:)/i.test(href)) ? href : '';
+      if (safeHref) {
+        el.setAttribute('href', safeHref);
+        el.setAttribute('target', '_blank');
+        el.setAttribute('rel', 'noopener noreferrer');
+      }
+    }
+
+    Array.from(node.childNodes).forEach((child) => {
+      el.appendChild(cleanNode(child));
+    });
+
+    return el;
+  };
+
+  const out = document.createElement('div');
+  Array.from(root.childNodes).forEach((n) => {
+    out.appendChild(cleanNode(n));
+  });
+  return out.innerHTML;
+}
+
 function openMediaDb() {
     return new Promise((resolve, reject) => {
         const req = indexedDB.open(MEDIA_DB_NAME, MEDIA_DB_VERSION);
@@ -509,7 +563,10 @@ class cardItem extends HTMLElement {
     }
 
     const descEl = this.shadowRoot.querySelector('card-description');
-    if (descEl) descEl.textContent = this.getAttribute('data-description') || '';
+    if (descEl) {
+      const html = this.getAttribute('data-description') || '';
+      descEl.innerHTML = sanitizeRichText(html);
+    }
 
     const dateEl = this.shadowRoot.getElementById('data-date');
     if (dateEl) {
@@ -807,7 +864,7 @@ async function loadEventos() {
         
         // Simulación de carga visual
         if (loadingState) {
-            loadingState.style.display = 'block';
+            loadingState.style.display = '';
         }
         if (emptyState) {
             emptyState.style.display = 'none';

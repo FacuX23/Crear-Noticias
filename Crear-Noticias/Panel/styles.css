@@ -398,6 +398,43 @@ ripple {
     resize: none;
 }
 
+.rich-editor-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 0.25rem;
+}
+
+.rich-editor {
+    width: 100%;
+    display: block;
+    min-height: 160px;
+}
+
+.rich-editor-wrapper .ql-toolbar.ql-snow {
+    background: #f6f6f685;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.rich-editor-wrapper .ql-container.ql-snow {
+    border: 1px solid #e5e7eb;
+    border-top: none;
+    border-radius: 0 0 0.75rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.rich-editor-wrapper .ql-editor {
+    min-height: 120px;
+    padding: 0.75rem 1rem;
+}
+
+.rich-editor-wrapper:focus-within .ql-toolbar.ql-snow,
+.rich-editor-wrapper:focus-within .ql-container.ql-snow {
+    border-color: #2563eb;
+}
+
 .form-input-small {
     width: 8rem;
     padding: 0.75rem 1rem;
