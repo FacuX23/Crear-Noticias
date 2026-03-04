@@ -677,6 +677,58 @@
             return tl
         }
 
+        function animateFullscreenCloseToRect({ modal, container, originEl, backdrop }) {
+            const rect = originEl.getBoundingClientRect()
+
+            // Medir el rect actual del modal ANTES de cambiar props
+            gsap.set(container, { clearProps: 'all' })
+            const startRect = container.getBoundingClientRect()
+            const startBorderRadius = window.getComputedStyle(container).borderRadius
+            const startBackgroundColor = window.getComputedStyle(container).backgroundColor
+
+            gsap.set(container, {
+                position: 'fixed',
+                top: startRect.top,
+                left: startRect.left,
+                width: startRect.width,
+                height: startRect.height,
+                transform: 'none',
+                borderRadius: startBorderRadius,
+                backgroundColor: startBackgroundColor,
+                overflow: 'hidden',
+            })
+
+            const tl = gsap.timeline({
+                onComplete() {
+                    if (modal) modal.classList.remove('active')
+                    gsap.set(container, { clearProps: 'all' })
+                    if (backdrop) gsap.set(backdrop, { clearProps: 'all' })
+                    accountOriginEl = null
+                }
+            })
+
+            if (backdrop) {
+                tl.to(backdrop, {
+                    opacity: 0,
+                    duration: 0.25,
+                    ease: 'power2.in',
+                }, 0)
+            }
+
+            tl.to(container, {
+                top: rect.top,
+                left: rect.left,
+                width: rect.width,
+                height: rect.height,
+                borderRadius: '400px',
+                opacity: 0,
+                duration: 0.5,
+                ease: closeEase1,
+            }, 0)
+
+            return tl
+        }
+
         function openAccountModal(originEl) {
             const button = originEl || document.getElementById('accountBtn')
             accountOriginEl = button
@@ -762,11 +814,12 @@
                 scale: true,
                 absolute: false,
                 onStart() {
-                    gsap.from(backdrop, {
-                        opacity: 1,
-                        duration: 0.3,
-                        ease: 'power2.in'
-                    })
+                if (backdrop) {
+                    gsap.fromTo(backdrop, 
+                        { opacity: 0 }, 
+                        { opacity: 1, duration: 0.4, ease: 'power2.out' }
+                    );
+                }
                     gsap.from(container, {
                         opacity: 0,
                         duration: 0.7,

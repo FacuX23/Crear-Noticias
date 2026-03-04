@@ -1013,7 +1013,12 @@ function openDeleteUserModal(userId, originEl) {
         scale: true,
         absolute: false,
         onStart() {
-            gsap.from(container, { opacity: 0, duration: 0.5, ease: easeMain });
+        if (backdrop) {
+            gsap.fromTo(backdrop, 
+                { opacity: 0 }, 
+                { opacity: 1, duration: 0.4, ease: 'power2.out' }
+            );
+        }
         }
     });
 }
@@ -1119,7 +1124,12 @@ function openVaciarAlumnosModal(originEl) {
         scale: true,
         absolute: false,
         onStart() {
-            gsap.from(container, { opacity: 0, duration: 0.5, ease: easeMain });
+        if (backdrop) {
+            gsap.fromTo(backdrop, 
+                { opacity: 0 }, 
+                { opacity: 1, duration: 0.4, ease: 'power2.out' }
+            );
+        }
         }
     });
 }
@@ -1695,7 +1705,12 @@ function showForm(originEl) {
         scale: true,
         absolute: false,
         onStart() {
-            if (backdrop) gsap.to(backdrop, { opacity: 1, duration: 0.3 });
+        if (backdrop) {
+            gsap.fromTo(backdrop, 
+                { opacity: 0 }, 
+                { opacity: 1, duration: 0.4, ease: 'power2.out' }
+            );
+        }
             gsap.from(modalContainer, {
                 opacity: 0,
                 duration: 0.7,

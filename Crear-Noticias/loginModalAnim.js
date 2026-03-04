@@ -88,7 +88,7 @@
             if (backdrop) gsap.set(backdrop, { clearProps: 'all', opacity: 0 });
 
             try {
-                // Copiado del patrón de accountModal (Panel): fit -> state -> clearProps -> Flip.from
+ 
                 Flip.fit(container, modal.__loginOriginEl, {
                     scale: true,
                     absolute: true
@@ -105,13 +105,13 @@
                     onStart: function () {
                         try { modal.style.visibility = 'visible'; } catch (e) {}
                         gsap.set(target, { visibility: 'visible' });
-                        if (backdrop) {
-                            gsap.from(backdrop, {
-                                opacity: 1,
-                                duration: 0.3,
-                                ease: 'power2.in'
-                            });
-                        }
+                            // onStart
+                            if (backdrop) {
+                                gsap.fromTo(backdrop, 
+                                    { opacity: 0 }, 
+                                    { opacity: 1, duration: 0.4, ease: 'power2.out' }
+                                );
+                            }
                         gsap.from(target, {
                             opacity: 0,
                             duration: 0.7,
