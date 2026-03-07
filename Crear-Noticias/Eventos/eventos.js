@@ -56,6 +56,164 @@ function sanitizeRichText(inputHtml) {
   return out.innerHTML;
 }
 
+function ensureSileoReady() {
+  if (typeof window === 'undefined') return;
+
+  if (!window.fireToast) {
+    window.fireToast = function(type, title, description) {
+      const start = Date.now();
+      const attempt = () => {
+        const has = typeof window.notifySuccess === 'function' && typeof window.notifyInfo === 'function' && typeof window.notifyError === 'function' && typeof window.notifyWarning === 'function';
+        if (has) {
+          if (type === 'success') return window.notifySuccess(title, description);
+          if (type === 'info') return window.notifyInfo(title, description);
+          if (type === 'warning') return window.notifyWarning(title, description);
+          return window.notifyError(title, description);
+        }
+        if (Date.now() - start > 3500) return;
+        setTimeout(attempt, 80);
+      };
+      attempt();
+    };
+  }
+
+  if (window.__sileo_loading) return;
+  if (window.sileo && typeof window.sileo.init === 'function') {
+    initSileoOnce();
+    return;
+  }
+
+  window.__sileo_loading = true;
+
+  try {
+    const cssHref = 'https://cdn.jsdelivr.net/gh/hamada147/sileo-vanilla/dist/styles.css';
+    const hasCss = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).some((l) => {
+      const href = String(l.getAttribute('href') || '');
+      return href.includes('sileo-vanilla') && href.endsWith('styles.css');
+    });
+    if (!hasCss) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = cssHref;
+      document.head.appendChild(link);
+    }
+  } catch (e) {
+    // noop
+  }
+
+  const src = 'https://cdn.jsdelivr.net/gh/hamada147/sileo-vanilla/dist/sileo.iife.js';
+  const hasScript = Array.from(document.scripts || []).some((s) => {
+    const sSrc = String(s.src || '');
+    return sSrc.includes('sileo-vanilla') && sSrc.endsWith('sileo.iife.js');
+  });
+
+  if (hasScript) {
+    const wait = setInterval(() => {
+      if (window.sileo && typeof window.sileo.init === 'function') {
+        clearInterval(wait);
+        initSileoOnce();
+      }
+    }, 50);
+    setTimeout(() => clearInterval(wait), 5000);
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = src;
+  script.async = true;
+  script.onload = () => {
+    initSileoOnce();
+  };
+  script.onerror = () => {
+    window.__sileo_loading = false;
+  };
+  document.head.appendChild(script);
+}
+
+function initSileoOnce() {
+  if (typeof window === 'undefined') return;
+  if (!window.sileo || typeof window.sileo.init !== 'function') return;
+
+  if (!window.__sileo_inited) {
+    window.sileo.init({ position: 'top-center' });
+    window.__sileo_inited = true;
+  }
+
+  if (!window.fireToast) {
+    window.fireToast = function(type, title, description) {
+      const start = Date.now();
+      const attempt = () => {
+        const has = typeof window.notifySuccess === 'function' && typeof window.notifyInfo === 'function' && typeof window.notifyError === 'function' && typeof window.notifyWarning === 'function';
+        if (has) {
+          if (type === 'success') return window.notifySuccess(title, description);
+          if (type === 'info') return window.notifyInfo(title, description);
+          if (type === 'warning') return window.notifyWarning(title, description);
+          return window.notifyError(title, description);
+        }
+        if (Date.now() - start > 3500) return;
+        setTimeout(attempt, 80);
+      };
+      attempt();
+    };
+  }
+
+  if (!window.notifySuccess) {
+    window.notifySuccess = function(title, description) {
+      try {
+        window.sileo.success({
+          title: title || 'Listo',
+          description: description || '',
+          position: 'top-center'
+        });
+      } catch (e) {}
+    };
+  }
+
+  if (!window.notifyInfo) {
+    window.notifyInfo = function(title, description) {
+      try {
+        window.sileo.info({
+          title: title || 'Info',
+          description: description || '',
+          position: 'top-center'
+        });
+      } catch (e) {}
+    };
+  }
+
+  if (!window.notifyError) {
+    window.notifyError = function(title, description) {
+      try {
+        window.sileo.error({
+          title: title || 'Error',
+          description: description || '',
+          position: 'top-center'
+        });
+      } catch (e) {}
+    };
+  }
+
+  if (!window.notifyWarning) {
+    window.notifyWarning = function(title, description) {
+      try {
+        if (window.sileo && typeof window.sileo.warning === 'function') {
+          window.sileo.warning({
+            title: title || 'Atención',
+            description: description || '',
+            position: 'top-center'
+          });
+        } else {
+          window.sileo.info({
+            title: title || 'Atención',
+            description: description || '',
+            position: 'top-center'
+          });
+        }
+      } catch (e) {}
+    };
+  }
+}
+
 function openMediaDb() {
     return new Promise((resolve, reject) => {
         const req = indexedDB.open(MEDIA_DB_NAME, MEDIA_DB_VERSION);
@@ -227,7 +385,6 @@ cardItemTemplate.innerHTML = `
     hidden-content{
         flex-direction:column;
         align-items: flex-start;
-        gap:8px;
         position:absolute;
         padding-bottom:48px;
         display:none;
@@ -422,6 +579,27 @@ cardItemTemplate.innerHTML = `
         color:white;
     }
 
+    button.event-notify-button{
+        font-family: "nunito", sans-serif;
+        background:#2563eb;
+        color:white;
+        border:3px solid #94b5ff;
+        box-shadow: 0px 0px 32px -10px #2563eb;
+        width:70%;
+        margin:0 auto;
+    }
+    button.event-notify-button:hover{
+        background:#1d4ed8;
+        border-color:#94b5ff;
+        color:white;
+    }
+
+    @media only screen and (max-width: 680px){
+        button.event-notify-button{
+            width:100%;
+            margin:0;
+        }
+    }
 
     /* Estilos de contenedor de creditos y fecha */
     .content-box{
@@ -469,6 +647,140 @@ cardItemTemplate.innerHTML = `
         height:100%;
         
     }
+
+    .modal-overlay{
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+    }
+    .modal-overlay.active{display:flex;}
+    .modal-backdrop{
+        position: absolute;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        backdrop-filter: blur(4px);
+    }
+    .modal-container{
+        position: relative;
+        width: 32rem;
+        max-width: 90vw;
+        border-radius: 2rem;
+        background: white;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+        overflow: hidden;
+        transform-origin: center;
+    }
+    .modal-close-btn{
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 10;
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+        background-color: #f3f4f6 !important;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        padding: 0 !important;
+        margin: 0;
+    }
+    .modal-close-btn:hover{background-color:#e5e7eb !important;}
+    .modal-close-btn svg{color:#0f172a;}
+
+    .modal-content{padding: 2rem; opacity: 1;}
+    .modal-header{display:flex; align-items:center; gap:1rem; margin-bottom:2rem;}
+    .modal-icon-wrapper{
+        width: 4rem;
+        height: 4rem;
+        background-color: #dbeafe;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .modal-icon-wrapper svg{color:#2563eb;}
+    .modal-title{
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-weight: 900;
+        font-size: 1.5rem;
+        color: #0f172a;
+        margin: 0;
+    }
+    .modal-subtitle{
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        font-size: 0.875rem;
+        color: #64748b;
+        margin: 0.25rem 0 0 0;
+    }
+
+    .modal-form{display:flex; flex-direction:column; gap: 1.5rem;}
+    .form-group{display:flex; flex-direction:column;}
+    .form-label{
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #334155;
+        margin-bottom: 0.5rem;
+    }
+    .form-label svg{color:#334155;}
+    .form-input{
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.2s;
+        height: 3rem;
+        box-sizing: border-box;
+        font-family: 'Nunito', sans-serif;
+        outline: none;
+    }
+    .form-input:focus{
+        box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+        border-color: rgba(37,99,235,0.35);
+    }
+    .form-hint{
+        font-size: 0.75rem;
+        color: #94a3b8;
+        margin: 0.375rem 0 0 0;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+    }
+    .modal-buttons{display:flex; gap:0.75rem; margin-top: 2rem;}
+    .btn-cancel,
+    .btn-save{
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        flex: 1;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 0.75rem;
+        font-size: 0.875rem !important;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: auto !important;
+    }
+    .btn-cancel{background: white !important; border: 1px solid #e5e7eb !important; color: #475569 !important;}
+    .btn-cancel:hover{background-color:#f9fafb !important; padding: 0.75rem 2.15rem !important;}
+    .btn-save{background-color:#2563eb !important; color:white !important;}
+    .btn-save:hover{background-color:#1d4ed8 !important; padding: 0.75rem 2.15rem !important}
+
 </style>
 
 <div class="transparent-cards" style="display:none; z-index:10; width:100%; height:100vh; inset:0; position:fixed; background:rgba(0, 0, 0, 0.2)">
@@ -515,16 +827,66 @@ cardItemTemplate.innerHTML = `
                     
                 </div>
 
-                
+                <button type="button" class="event-notify-button">Inscribirse a este evento</button>
 
+                <div class="modal-overlay" id="inscripcionModal">
+                    <div class="modal-backdrop" data-close-inscripcion="1"></div>
+                    <div class="modal-container" data-modal-container="1">
+                        <button type="button" class="modal-close-btn" data-close-inscripcion-btn="1" aria-label="Cerrar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="modal-icon-wrapper">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-check2-icon lucide-calendar-check-2"><path d="M8 2v4"/><path d="M16 2v4"/><path d="M21 14V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8"/><path d="M3 10h18"/><path d="m16 20 2 2 4-4"/></svg>
+                                </div>
+                                <div>
+                                    <h2 class="modal-title">Confirmar inscripción</h2>
+                                    <p class="modal-subtitle">Completá tus datos para confirmar la inscripción al evento</p>
+                                </div>
+                            </div>
+
+                            <form class="modal-form" id="inscripcionForm" autocomplete="on">
+                                <div class="form-group">
+                                    <label class="form-label" for="inscripcionNombre">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                        Nombre
+                                    </label>
+                                    <input class="form-input" id="inscripcionNombre" name="nombre" type="text" required autocomplete="given-name" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="inscripcionApellido">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                        Apellido
+                                    </label>
+                                    <input class="form-input" id="inscripcionApellido" name="apellido" type="text" required autocomplete="family-name" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="inscripcionEmail">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                        Correo electrónico
+                                    </label>
+                                    <input class="form-input" id="inscripcionEmail" name="email" type="email" required autocomplete="email" />
+                                    <p class="form-hint">Usaremos este correo para enviarte información del evento</p>
+                                </div>
+
+                                <div class="modal-buttons">
+                                    <button type="button" class="btn-cancel" data-cancel-inscripcion="1">Cancelar</button>
+                                    <button type="submit" class="btn-save">Confirmar inscripción</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                
             </hidden-content>
         </span>
-
-        
-
-        
-        
-       
     </div>
 `;
 
@@ -610,17 +972,133 @@ class cardItem extends HTMLElement {
     const closeButton = this.shadowRoot.querySelector("close-button");
     const hiddenContent = this.shadowRoot.querySelector("hidden-content");
 
+    const notifyButton = this.shadowRoot.querySelector('.event-notify-button');
+    const inscripcionModal = this.shadowRoot.getElementById('inscripcionModal');
+    const inscripcionForm = this.shadowRoot.getElementById('inscripcionForm');
+    const modalContainer = inscripcionModal ? inscripcionModal.querySelector('[data-modal-container="1"]') : null;
+    const modalBackdrop = inscripcionModal ? inscripcionModal.querySelector('[data-close-inscripcion="1"]') : null;
+    const modalCancel = inscripcionModal ? inscripcionModal.querySelector('[data-cancel-inscripcion="1"]') : null;
+    const modalCloseBtn = inscripcionModal ? inscripcionModal.querySelector('[data-close-inscripcion-btn="1"]') : null;
+
+    const __hasGsapModal = typeof window !== 'undefined' && window.gsap;
+
+    ensureSileoReady();
+
+    function openInscripcionModal(ev) {
+        if (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+        }
+        if (!inscripcionModal || !modalContainer) return;
+
+        ensureSileoReady();
+
+        inscripcionModal.classList.add('active');
+        if (__hasGsapModal) {
+            window.gsap.killTweensOf(modalContainer);
+            window.gsap.fromTo(modalContainer,
+                { scale: 0.92, opacity: 0 },
+                { scale: 1, opacity: 1, duration: 0.22, ease: 'power2.out' }
+            );
+        } else {
+            modalContainer.style.transform = 'scale(1)';
+            modalContainer.style.opacity = '1';
+        }
+    }
+
+    function closeInscripcionModal(ev) {
+        if (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+        }
+        if (!inscripcionModal || !modalContainer) return;
+
+        const done = () => {
+            inscripcionModal.classList.remove('active');
+            if (inscripcionForm) {
+                try { inscripcionForm.reset(); } catch (e) {}
+            }
+        };
+
+        if (__hasGsapModal) {
+            window.gsap.killTweensOf(modalContainer);
+            window.gsap.to(modalContainer, {
+                scale: 0.92,
+                opacity: 0,
+                duration: 0.18,
+                ease: 'power2.in',
+                onComplete: done,
+            });
+        } else {
+            done();
+        }
+    }
+
+    if (notifyButton) {
+        notifyButton.addEventListener('click', openInscripcionModal);
+    }
+    if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', closeInscripcionModal);
+    }
+    if (modalCancel) {
+        modalCancel.addEventListener('click', closeInscripcionModal);
+    }
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', closeInscripcionModal);
+    }
+    if (modalContainer) {
+        modalContainer.addEventListener('click', (e) => e.stopPropagation());
+    }
+    if (inscripcionForm) {
+        inscripcionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nombre = (this.querySelector('[name="nombre"]')?.value || '').trim();
+            const apellido = (this.querySelector('[name="apellido"]')?.value || '').trim();
+            const email = (this.querySelector('[name="email"]')?.value || '').trim();
+
+            closeInscripcionModal(e);
+
+            setTimeout(() => {
+                ensureSileoReady();
+                if (!email) {
+                    if (window.fireToast) {
+                        window.fireToast('info', 'Revisá el correo', 'Correo electrónico inválido');
+                    }
+                    return;
+                }
+
+                const fullName = `${nombre} ${apellido}`.trim();
+                const label = email ? ` ${email}` : '';
+                if (window.fireToast) {
+                    window.fireToast('success', 'Inscripción confirmada', `Recibirás una notificación a tu correo electrónico ${label} cuando se acerque la fecha del evento.`);
+                }
+            }, __hasGsapModal ? 200 : 0);
+        });
+    }
+
     function removeVisibility(element){
         if (element.hasAttribute("closing") && !(cardElement.classList.contains("open"))) {
             element.classList.remove("element-visible");
+
             element.removeAttribute("closing");
         }
     }
+
 
     const interactionClose = document.createElement('span');
     interactionClose.classList.add("interaction");
     closeButton.appendChild(interactionClose);
     interactionClose.onclick = function() {toggleCard()};
+
+
+    // Cerrar al hacer click en el fondo (fuera de la card)
+    transparentCards.addEventListener('click', (ev) => {
+        if (!cardElement.classList.contains('open')) return;
+        if (ev.target === transparentCards) {
+            toggleCard();
+        }
+    });
 
 
     function toggleCard(){

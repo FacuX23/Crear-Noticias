@@ -417,7 +417,7 @@ function initSileoOnce() {
 // Setup event listeners
 function setupEventListeners() {
     // Tabs
-    document.querySelectorAll('.sidebar-nav-item[data-tab="noticias"], .sidebar-nav-item[data-tab="eventos"], .sidebar-nav-item[data-tab="usuarios"], .mobile-top-item[data-tab], .mobile-bottom-item[data-tab]').forEach(btn => {
+    document.querySelectorAll('.sidebar-nav-item[data-tab="noticias"], .sidebar-nav-item[data-tab="eventos"], .sidebar-nav-item[data-tab="usuarios"], .sidebar-nav-item[data-tab="eventos-inscriptos"], .mobile-top-item[data-tab], .mobile-bottom-item[data-tab]').forEach(btn => {
         btn.addEventListener('click', function() {
             const tab = this.dataset.tab;
             switchTab(tab);
@@ -425,15 +425,30 @@ function setupEventListeners() {
     });
 
     // Add button
-    document.getElementById('addBtn').addEventListener('click', openNewForm);
+    const addBtn = document.getElementById('addBtn');
+    if (addBtn) {
+        addBtn.addEventListener('click', openNewForm);
+    }
 
     // Form buttons
-    document.getElementById('cancelBtn').addEventListener('click', closeForm);
-    document.getElementById('saveBtn').addEventListener('click', handleSave);
+    const cancelBtn = document.getElementById('cancelBtn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeForm);
+    }
+    const saveBtn = document.getElementById('saveBtn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', handleSave);
+    }
 
     // File uploads
-    document.getElementById('inputImagen').addEventListener('change', (e) => handleFileUpload(e, 'imagen'));
-    document.getElementById('inputVideo').addEventListener('change', (e) => handleFileUpload(e, 'video'));
+    const inputImagen = document.getElementById('inputImagen');
+    if (inputImagen) {
+        inputImagen.addEventListener('change', (e) => handleFileUpload(e, 'imagen'));
+    }
+    const inputVideo = document.getElementById('inputVideo');
+    if (inputVideo) {
+        inputVideo.addEventListener('change', (e) => handleFileUpload(e, 'video'));
+    }
 
     // Días de visibilidad
     const inputDias = document.getElementById('inputDias');
@@ -498,14 +513,14 @@ function logoutAndRedirect() {
 
 // Switch tab
 function switchTab(tab) {
-    if (tab !== 'noticias' && tab !== 'eventos' && tab !== 'usuarios') return;
+    if (tab !== 'noticias' && tab !== 'eventos' && tab !== 'usuarios' && tab !== 'eventos-inscriptos') return;
     if (tab === 'usuarios' && !isDirectorUser()) return;
     activeTab = tab;
 
     // AGREGAR DELAY PARA QUE EL RIPPLE COMPLETE
     setTimeout(() => {
         // Update sidebar
-        document.querySelectorAll('.sidebar-nav-item[data-tab="noticias"], .sidebar-nav-item[data-tab="eventos"], .sidebar-nav-item[data-tab="usuarios"]').forEach(btn => {
+        document.querySelectorAll('.sidebar-nav-item[data-tab="noticias"], .sidebar-nav-item[data-tab="eventos"], .sidebar-nav-item[data-tab="usuarios"], .sidebar-nav-item[data-tab="eventos-inscriptos"]').forEach(btn => {
             btn.classList.remove('active');
             if (btn.dataset.tab === tab) {
                 btn.classList.add('active');
@@ -536,33 +551,95 @@ function switchTab(tab) {
     const addBtn = document.getElementById('addBtn');
 
     if (tab === 'noticias') {
-        contentTitle.textContent = 'Gestión de Noticias';
-        contentSubtitle.textContent = 'Panel de Administración';
-        addBtnText.textContent = 'Agregar Noticia';
+        if (contentTitle) contentTitle.textContent = 'Gestión de Noticias';
+        if (contentSubtitle) contentSubtitle.textContent = 'Panel de Administración';
+        if (addBtnText) addBtnText.textContent = 'Agregar Noticia';
         if (addBtn) addBtn.style.display = '';
     } else {
         if (tab === 'eventos') {
-            contentTitle.textContent = 'Gestión de Eventos';
-            contentSubtitle.textContent = 'Panel de Administración';
-            addBtnText.textContent = 'Agregar Evento';
+            if (contentTitle) contentTitle.textContent = 'Gestión de Eventos';
+            if (contentSubtitle) contentSubtitle.textContent = 'Panel de Administración';
+            if (addBtnText) addBtnText.textContent = 'Agregar Evento';
             if (addBtn) addBtn.style.display = '';
+        } else if (tab === 'eventos-inscriptos') {
+            if (contentTitle) contentTitle.textContent = 'Eventos a los que estás inscripto';
+            if (contentSubtitle) contentSubtitle.textContent = 'Panel de Administración';
+            if (addBtn) addBtn.style.display = 'none';
         } else {
-            contentTitle.textContent = 'Gestión de Usuarios';
-            contentSubtitle.textContent = 'Solo Director';
+            if (contentTitle) contentTitle.textContent = 'Gestión de Usuarios';
+            if (contentSubtitle) contentSubtitle.textContent = 'Solo Director';
             if (addBtn) addBtn.style.display = 'none';
         }
     }
 
     closeFormImmediate();
 
+    if (tab === 'eventos-inscriptos') {
+        hideUsersSection();
+        showEventosInscriptosSection();
+        renderEventosInscriptos();
+        return;
+    }
+
     if (tab === 'usuarios') {
+        hideEventosInscriptosSection();
         showUsersSection();
         loadUsuarios();
         return;
     }
 
+    hideEventosInscriptosSection();
     hideUsersSection();
     renderItems();
+}
+
+function showEventosInscriptosSection() {
+    const eventosSection = document.getElementById('eventosInscriptosSection');
+    const itemsList = document.getElementById('itemsList');
+    const usersSection = document.getElementById('usersSection');
+    const formContainer = document.getElementById('formContainer');
+
+    if (eventosSection) eventosSection.style.display = '';
+    if (itemsList) itemsList.style.display = 'none';
+    if (usersSection) usersSection.style.display = 'none';
+    if (formContainer) formContainer.classList.remove('active');
+}
+
+function hideEventosInscriptosSection() {
+    const eventosSection = document.getElementById('eventosInscriptosSection');
+    if (eventosSection) eventosSection.style.display = 'none';
+}
+
+function setupEventosInscriptosAccordion() {
+    const list = document.getElementById('eventosInscriptosList');
+    if (!list || list.hasAttribute('data-accordion-setup')) return;
+    list.setAttribute('data-accordion-setup', 'true');
+
+    list.querySelectorAll('[data-accordion-toggle]').forEach((header) => {
+        header.addEventListener('click', function() {
+            const key = this.getAttribute('data-accordion-toggle');
+            if (!key) return;
+            const section = list.querySelector(`[data-accordion-section="${key}"]`);
+            if (!section) return;
+            section.classList.toggle('open');
+        });
+    });
+}
+
+function renderEventosInscriptos() {
+    setupEventosInscriptosAccordion();
+    const target = document.getElementById('eventosInscriptosItems');
+    if (!target) return;
+
+    // TODO: conectar a la data real de inscripciones del usuario.
+    // Por ahora: placeholder para no romper la UI.
+    target.innerHTML = `
+        <div class="users-row">
+            <div class="users-row-info">
+                <h3 class="users-row-title">No hay eventos inscriptos</h3>
+            </div>
+        </div>
+    `;
 }
 
 function isDirectorUser() {
@@ -1483,7 +1560,7 @@ function updateFormUI() {
         formTitle.textContent = `Editar ${activeTab === 'noticias' ? 'Noticia' : 'Evento'}`;
         saveBtnText.textContent = 'Guardar cambios';
     } else {
-        formTitle.textContent = `Nueva ${activeTab === 'noticias' ? 'Noticia' : 'Evento'}`;
+        formTitle.textContent = `${activeTab === 'noticias' ? 'Nueva Noticia' : 'Nuevo Evento'}`;
         saveBtnText.textContent = 'Publicar';
     }
 

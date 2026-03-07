@@ -1266,7 +1266,7 @@ border-top: 1px solid #d1d5db;
 z-index: 40;
 align-items: center;
 justify-content: center;
-gap: 2.25rem;
+/* gap: 2.25rem; */
 padding: 0 1rem;
 }
 

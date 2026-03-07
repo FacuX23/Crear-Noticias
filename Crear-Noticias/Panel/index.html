@@ -40,6 +40,21 @@
             </svg>
             <span>Eventos</span>
         </button>
+        <button class="mobile-top-item" data-tab="eventos-inscriptos" type="button">
+            <svg class="mobile-nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <path d="M8 14h.01"></path>
+                <path d="M12 14h.01"></path>
+                <path d="M16 14h.01"></path>
+                <path d="M8 18h.01"></path>
+                <path d="M12 18h.01"></path>
+                <path d="M16 18h.01"></path>
+            </svg>
+            <span>Eventos inscriptos</span>
+        </button>
         <a href="/Crear-Noticias/index.html" class="mobile-top-item" style="text-decoration: none;">
             <svg class="mobile-nav-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
             <span>Inicio</span>
@@ -106,6 +121,10 @@
                         <path d="M16 18h.01"></path>
                     </svg>
                     <span>Eventos</span>
+                </button>
+                <button class="sidebar-nav-item ripple_effect" data-tab="eventos-inscriptos">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-check-icon lucide-calendar-check"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+                    <span>Eventos inscriptos</span>
                 </button>
                 <a href="/Crear-Noticias/index.html" style="text-decoration: none;" class="sidebar-nav-item ripple_effect" data-tab="home">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house w-5 h-5"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
@@ -258,7 +277,7 @@
                 <div class="content-header">
                     <h1 class="content-title" id="contentTitle">Gestión de Noticias</h1>
                     <p class="content-subtitle" id="contentSubtitle">Bienvenido</p>
-                </div>
+                            </div>
 
                 <button id="addBtn" class="add-button">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -525,6 +544,22 @@
                             <div class="delete-modal-buttons">
                                 <button id="vaciarAlumnosCancelBtn" class="delete-btn-cancel" onclick="closeVaciarAlumnosModal()">No</button>
                                 <button id="vaciarAlumnosConfirmBtn" class="delete-btn-confirm">Si</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="eventosInscriptosSection" style="display: none;">
+                    <div id="eventosInscriptosList" class="users-accordion">
+                        <div class="users-accordion-section open" data-accordion-section="inscriptos">
+                            <div class="users-accordion-header" data-accordion-toggle="inscriptos">
+                                <div class="users-accordion-title">Eventos</div>
+                                <div class="users-accordion-right">
+                                    <svg class="users-accordion-chevron" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                </div>
+                            </div>
+                            <div class="users-accordion-body" data-accordion-body="inscriptos">
+                                <div id="eventosInscriptosItems" class="users-accordion-list"></div>
                             </div>
                         </div>
                     </div>

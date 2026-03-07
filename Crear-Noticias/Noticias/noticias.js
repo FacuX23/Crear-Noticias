@@ -618,6 +618,14 @@ class cardItem extends HTMLElement {
     interactionClose.onclick = function() {toggleCard()};
 
 
+        // Cerrar al hacer click en el fondo (fuera de la card)
+    transparentCards.addEventListener('click', (ev) => {
+        if (!cardElement.classList.contains('open')) return;
+        if (ev.target === transparentCards) {
+            toggleCard();
+        }
+    });
+
     function toggleCard(){
         
 

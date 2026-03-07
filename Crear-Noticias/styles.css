@@ -1024,6 +1024,7 @@ box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 
         flex-direction: column;
         gap: 16px;
     }
+    
 }
 
 /* Móviles medianos (600px y menos) */
