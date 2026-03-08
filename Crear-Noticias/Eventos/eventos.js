@@ -827,7 +827,14 @@ cardItemTemplate.innerHTML = `
                     
                 </div>
 
-                <button type="button" class="event-notify-button">Inscribirse a este evento</button>
+
+                
+            </hidden-content>
+        </span>
+    </div>
+`;
+
+{/* <button type="button" class="event-notify-button">Inscribirse a este evento</button>
 
                 <div class="modal-overlay" id="inscripcionModal">
                     <div class="modal-backdrop" data-close-inscripcion="1"></div>
@@ -882,13 +889,7 @@ cardItemTemplate.innerHTML = `
                             </form>
                         </div>
                     </div>
-                </div>
-
-                
-            </hidden-content>
-        </span>
-    </div>
-`;
+                </div> */}
 
 class cardItem extends HTMLElement {
     

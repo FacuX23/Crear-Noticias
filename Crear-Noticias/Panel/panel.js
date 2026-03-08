@@ -1282,7 +1282,7 @@ async function loadData() {
 
     try {
         // Cargar noticias
-        const noticiasResponse = await fetch('/Crear-Noticias/api/noticias/index.php', {
+        const noticiasResponse = await fetch('/Crear-Noticias/api/noticias/mis.php', {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -1290,7 +1290,7 @@ async function loadData() {
         });
 
         // Cargar eventos
-        const eventosResponse = await fetch('/Crear-Noticias/api/eventos/index.php', {
+        const eventosResponse = await fetch('/Crear-Noticias/api/eventos/mis.php', {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -1401,6 +1401,7 @@ function renderItems() {
                     <h3 class="item-title">${item.titulo}</h3>
                     <p class="item-meta">
                         ${activeTab === 'eventos' ? `${formatDate(item.fecha_evento)}${item.hora_evento ? ` • ${String(item.hora_evento).slice(0, 5)}` : ''}` : `${formatDate(item.created_date)}`} • 
+                        Autor: ${(item && item.autor && item.autor.nombre) ? String(item.autor.nombre) : ''} • 
                         Expira: ${formatDate(item.fecha_expiracion)}
                     </p>
                 </div>

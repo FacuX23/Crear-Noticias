@@ -139,7 +139,7 @@ background: #1d4ed8;
     text-decoration: none;
     transition: background-color 0.2s;
     margin-left: 1rem;
-    box-shadow: 0px 0px 32px -10px #007aff;
+    box-shadow: 0px 0px 32px -10px #2563eb;
 }
 
 .nav-button:hover {
