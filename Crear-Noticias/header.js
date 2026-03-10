@@ -63,11 +63,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Focus on email input
             setTimeout(() => {
-                const emailInput = document.getElementById('loginEmail');
-                if (emailInput) {
-                    emailInput.focus();
-                }
-            }, 100);
+    const emailInput = document.getElementById('loginEmail');
+    if (emailInput && window.innerWidth >= 768) { // Solo en desktop
+        emailInput.focus();
+    }
+}, 100);
         }
     }
 

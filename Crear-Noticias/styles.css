@@ -14,6 +14,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
 }
 
 ::-webkit-scrollbar {
@@ -852,7 +853,7 @@ box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 
 .weather-forecast-toggle {
     margin: 0 auto;
     padding: 16px 24px;
-    background: linear-gradient(to bottom right, #3b82f6, #1d4ed8);
+    background: linear-gradient(to bottom right, #2777f8, #1d54ee);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     color: white;
@@ -878,7 +879,7 @@ box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 
     height: 30px;
     top: 7px;
     right: -29px;
-    background: radial-gradient(circle at bottom right, transparent 30px, #2067db 31px);
+    background: radial-gradient(circle at bottom right, transparent 30px, #1867e8 31px);
 }
 
 /* Curva izquierda del botón */
@@ -889,11 +890,7 @@ box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 
     height: 30px;
     top: 7px;
     left: -29px;
-    background: radial-gradient(circle at bottom left, transparent 30px, #347bef 31px);
-}
-
-.weather-forecast-toggle:active {
-    transform: scale(0.99);
+    background: radial-gradient(circle at bottom left, transparent 30px, #2874ef 31px);
 }
 
 .weather-header {
@@ -1354,7 +1351,31 @@ box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 
     margin-bottom: 0px;
     transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     letter-spacing: -2px;
+    position: relative;
+    display: inline-block;
 }
+
+.day-temp-min {
+    font-size: 0.8em;
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 900;
+    opacity: 0;
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    margin-left: 6px;
+    transition: opacity 0.3s ease;
+    color: #2C3E50;
+}
+
+.forecast-day-card:hover .day-temp-min,
+.forecast-day-card.active .day-temp-min {
+    opacity: 0.7;
+}
+
+
 
 .forecast-day-card:hover .day-temp,
 .forecast-day-card.active .day-temp {

@@ -73,15 +73,12 @@
         if (lowerCondition.includes('llovizna') || lowerCondition.includes('drizzle') ||
             lowerCondition.includes('lluvia ligera') || lowerCondition.includes('light rain') ||
             lowerCondition.includes('lluvia débil')) {
-            return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
-                <path d="M8 19v1"/>
-                <path d="M8 14v1"/>
-                <path d="M16 19v1"/>
-                <path d="M16 14v1"/>
-                <path d="M12 21v1"/>
-                <path d="M12 16v1"/>
-            </svg>`;
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-drizzle-icon lucide-cloud-drizzle"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 19v1"/><path d="M8 14v1"/><path d="M16 19v1"/><path d="M16 14v1"/><path d="M12 21v1"/><path d="M12 16v1"/></svg>`;
+        }
+
+        // Cualquier otra condición con lluvia que no haya matcheado arriba
+        if (lowerCondition.includes('lluvia') || lowerCondition.includes('drizzle') || lowerCondition.includes('rain')) {
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-drizzle-icon lucide-cloud-drizzle"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 19v1"/><path d="M8 14v1"/><path d="M16 19v1"/><path d="M16 14v1"/><path d="M12 21v1"/><path d="M12 16v1"/></svg>`;
         }
 
         // Nublado con Luna
@@ -403,7 +400,8 @@ card.innerHTML = `
             ${getWeatherIcon(day.day.condition.text)}
         </div>
     </div>
-    <div class="day-temp">${Math.round(day.day.maxtemp_c)}°</div>
+    <div class="day-temp">    ${Math.round(day.day.maxtemp_c)}°
+    <span class="day-temp-min">- ${Math.round(day.day.mintemp_c)}°</span></div>
     <div class="day-details">
         <div class="day-condition">${day.day.condition.text}</div>
         <div class="day-info-grid">
