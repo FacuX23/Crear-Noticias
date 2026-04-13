@@ -59,15 +59,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 loginSubmit.disabled = false;
                 loginButtonText.style.display = 'inline';
                 loginSpinner.style.display = 'none';
+                
+                // Limpiar clases de error en los inputs
+                const emailInput = document.getElementById('loginEmail');
+                const passwordInput = document.getElementById('loginPassword');
+                if (emailInput) emailInput.classList.remove('error');
+                if (passwordInput) passwordInput.classList.remove('error');
             }
-            
-            // Focus on email input
-            setTimeout(() => {
-    const emailInput = document.getElementById('loginEmail');
-    if (emailInput && window.innerWidth >= 768) { // Solo en desktop
-        emailInput.focus();
-    }
-}, 100);
         }
     }
 
@@ -82,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    const PANEL_URL = '/Crear-Noticias/Panel/index.html';
+    const PANEL_URL = '/Crear-Noticias/Panel';
     const HOME_URL = '/Crear-Noticias/index.html';
 
     function hasSessionToken() {
@@ -112,8 +110,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const desktopLabel = hasSessionToken() ? 'Ir a panel de estudiante' : 'Iniciar sesión';
         const mobileLabel = hasSessionToken() ? 'Ir al panel' : 'Iniciar sesión';
 
-        const desktopButtons = document.querySelectorAll('a.nav-button[href*="/Panel/"]');
-        const mobileButtons = document.querySelectorAll('a.mobile-top-item[href*="/Panel/"]');
+        const desktopButtons = document.querySelectorAll('a.nav-button[href*="/Panel"]');
+        const mobileButtons = document.querySelectorAll('a.mobile-top-item[href*="/Panel"]');
 
         desktopButtons.forEach((button) => setPanelButtonLabel(button, desktopLabel));
         mobileButtons.forEach((button) => setPanelButtonLabel(button, mobileLabel));
@@ -121,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle clicks on "Ir a panel de estudiante" buttons
     function setupPanelButtons() {
-        const panelButtons = document.querySelectorAll('a.nav-button[href*="/Panel/"], a.mobile-top-item[href*="/Panel/"]');
+        const panelButtons = document.querySelectorAll('a.nav-button[href*="/Panel"], a.mobile-top-item[href*="/Panel"]');
 
         panelButtons.forEach(button => {
             if (button.hasAttribute('data-login-setup')) return;
@@ -160,6 +158,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle login form submission
     if (loginForm) {
+        // Agregar eventos input y focus para limpiar error
+        const emailInput = document.getElementById('loginEmail');
+        const passwordInput = document.getElementById('loginPassword');
+        
+        if (emailInput) {
+            emailInput.addEventListener('input', function() {
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                }
+            });
+            emailInput.addEventListener('focus', function() {
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                }
+            });
+        }
+        
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function() {
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                }
+            });
+            passwordInput.addEventListener('focus', function() {
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                }
+            });
+        }
+        
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -168,16 +196,25 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (!email || !password) {
                 showLoginError('Por favor, completá todos los campos');
+                if (!email) {
+                    const emailInput = document.getElementById('loginEmail');
+                    emailInput.classList.add('error');
+                }
+                if (!password) {
+                    const passwordInput = document.getElementById('loginPassword');
+                    passwordInput.classList.add('error');
+                }
                 return;
             }
 
             const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
             if (!isValidEmail) {
                 showLoginError('Ingresá un correo válido');
+                const emailInput = document.getElementById('loginEmail');
+                emailInput.classList.add('error');
                 return;
             }
             
-            // Show loading state
             loginSubmit.disabled = true;
             loginButtonText.style.display = 'none';
             loginSpinner.style.display = 'inline';
@@ -206,7 +243,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Redirect to Panel
                     window.location.href = PANEL_URL;
                 } else {
-                    showLoginError(data.error || 'Error al iniciar sesión');
+                    // Vibrar ambos inputs cuando el servidor devuelve error, mantener border rojo fijo
+                    const emailInput = document.getElementById('loginEmail');
+                    const passwordInput = document.getElementById('loginPassword');
+                    emailInput.classList.add('error');
+                    passwordInput.classList.add('error');
                 }
             } catch (error) {
                 console.error('Login error:', error);

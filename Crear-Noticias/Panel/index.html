@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - Escuela Crear</title>
-    <link rel="stylesheet" href="/Crear-Noticias/Panel/styles.css">
+    <link rel="stylesheet" href="./styles.css">
     <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
     <link rel="icon" href="/Crear-Noticias/logo.png" type="image/png">
 
@@ -234,6 +234,7 @@
                                 id="nombreUsuario"
                                 class="form-input"
                                 placeholder="Ingresa tu nombre de usuario"
+                                onkeydown="if(event.key === 'Enter') { event.preventDefault(); saveAccountChanges(); }"
                             />
                             <p class="form-hint">Este nombre aparecerá en tus publicaciones</p>
                         </div>
@@ -293,19 +294,19 @@
 
                         <form id="usersCreateForm" class="form-content">
                             <div class="form-group">
-                                <label class="form-label">Usuario</label>
-                                <input type="text" id="userNuevoUsuario" class="form-input" placeholder="Ej: Jaun" autocomplete="username">
+                                <label class="form-label">Nombre de usuario</label>
+                                <input type="text" id="userNuevoUsuario" class="form-input" autocomplete="username" placeholder="Julián Melgar">
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label">Correo electrónico</label>
-                                <input type="email" id="userNuevoEmail" class="form-input" placeholder="correo@ejemplo.com" autocomplete="email">
+                                <input type="email" id="userNuevoEmail" class="form-input" autocomplete="email" placeholder="alumno@escuelacrear.com.ar">
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label">Contraseña</label>
                                 <div class="password-field">
-                                    <input type="password" id="userNuevoPassword" class="form-input" placeholder="Contraseña" autocomplete="new-password">
+                                    <input type="password" id="userNuevoPassword" class="form-input" autocomplete="new-password" placeholder="***">
                                     <button type="button" class="password-toggle" aria-label="Mostrar u ocultar contraseña" onclick="togglePasswordVisibility('userNuevoPassword', this)">
                                         <svg class="password-icon password-icon-show" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
@@ -335,7 +336,7 @@
 
                             <div class="form-group">
                                 <label class="form-label">Ciclo lectivo</label>
-                                <input type="number" id="userNuevoCiclo" class="form-input" placeholder="Ej: 2026">
+                                <input type="number" id="userNuevoCiclo" class="form-input" placeholder="2026">
                             </div>
 
                             <div id="usersMessage" class="form-hint" style="display: none;"></div>
@@ -579,62 +580,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 
-    <!-- Modal de Login -->
-    <div id="loginModal" class="login-modal" style="display: none;">
-        <div class="login-backdrop"></div>
-        <div class="login-container">
-            <div class="login-card">
-                <div class="login-header">
-                    <h2 class="login-title">Acceso al Panel</h2>
-                    <p class="login-subtitle">Ingresá tus datos para continuar</p>
-                </div>
-                
-                <form id="loginForm" class="login-form">
-                    <div class="form-group">
-                        <label for="loginEmail" class="form-label">Correo electrónico</label>
-                        <input 
-                            type="email" 
-                            id="loginEmail" 
-                            name="email" 
-                            class="form-input" 
-                            placeholder="Tu correo"
-                            required
-                            autocomplete="email"
-                        >
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="loginPassword" class="form-label">Contraseña</label>
-                        <input 
-                            type="password" 
-                            id="loginPassword" 
-                            name="password" 
-                            class="form-input" 
-                            placeholder="Tu contraseña"
-                            required
-                            autocomplete="current-password"
-                        >
-                    </div>
-                    
-                    <div id="loginError" class="login-error" style="display: none;"></div>
-                    
-                    <div class="login-actions">
-                        <button type="button" id="loginCancel" class="btn btn-secondary">Cancelar</button>
-                        <button type="submit" id="loginSubmit" class="btn btn-primary">
-                            <span id="loginButtonText">Ingresar</span>
-                            <div id="loginSpinner" class="login-spinner" style="display: none;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="2" x2="12" y2="6"></line>
-                                    <line x1="12" y1="18" x2="12" y2="22"></line>
-                                </svg>
-                            </div>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <script>
         const __hasGsap = typeof gsap !== 'undefined' && typeof Flip !== 'undefined' && typeof CustomEase !== 'undefined';
         if (__hasGsap) {
@@ -679,8 +624,8 @@
                 })
                 tl.to(backdrop, {
                     opacity: 1,
-                    duration: 0.3,
-                    ease: 'power2.out',
+                    duration: 0.2,
+                    ease: 'power2.in',
                 }, 0)
             }
 
@@ -764,6 +709,15 @@
             return tl
         }
 
+        function isUsableOriginElement(el) {
+            if (!el || !el.getBoundingClientRect) return false
+            const cs = window.getComputedStyle(el)
+            if (cs && (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0')) return false
+            const r = el.getBoundingClientRect()
+            if (!r) return false
+            return (r.width > 2 && r.height > 2)
+        }
+
         function openAccountModal(originEl) {
             const button = originEl || document.getElementById('accountBtn')
             accountOriginEl = button
@@ -772,7 +726,6 @@
             const backdrop = modal.querySelector('.modal-backdrop')
             const content = modal.querySelector('.modal-content')
             const closeBtn = modal.querySelector('.modal-close-btn')
-
 
             const isMobile = window.matchMedia('(max-width: 768px)').matches
 
@@ -793,80 +746,199 @@
             if (tipoEl) tipoEl.textContent = roleLabel
             if (nameEl) nameEl.value = displayName
 
+            if (!container || !content) {
+                modal.classList.add('active')
+                return
+            }
+
+            if (!__hasGsap) {
+                modal.classList.add('active')
+                return
+            }
+
+            try { gsap.registerPlugin(Flip, CustomEase); } catch (e) { }
+
+            try { gsap.killTweensOf(modal); } catch (e) { }
+            try { gsap.killTweensOf(container); } catch (e) { }
+            try { gsap.killTweensOf(content); } catch (e) { }
+            if (backdrop) { try { gsap.killTweensOf(backdrop); } catch (e) { } }
+            if (closeBtn) { try { gsap.killTweensOf(closeBtn); } catch (e) { } }
+
+            try { gsap.set(container, { clearProps: 'all' }); } catch (e) { }
+            try { gsap.set(content, { clearProps: 'all' }); } catch (e) { }
+            if (backdrop) { try { gsap.set(backdrop, { clearProps: 'all' }); } catch (e) { } }
+            try { container.removeAttribute('data-flip-id'); } catch (e) { }
+            try { content.removeAttribute('data-flip-id'); } catch (e) { }
+
+            try { gsap.set(modal, { opacity: 0 }); } catch (e) { }
+            try { modal.style.visibility = 'hidden'; } catch (e) { }
 
             modal.classList.add('active')
+            void modal.offsetWidth
+            void container.offsetWidth
 
-            if (!__hasGsap || !container || !button) {
+            function fallbackOpen() {
+                try { modal.style.visibility = 'visible'; } catch (e) { }
+                try { gsap.set(modal, { opacity: 1 }); } catch (e) { }
+                if (backdrop) {
+                    try { gsap.set(backdrop, { opacity: 0 }); } catch (e) { }
+                    try { gsap.to(backdrop, { opacity: 1, duration: 0.25, ease: 'power2.out' }); } catch (e) { }
+                }
+                try {
+                    gsap.fromTo(content,
+                        { opacity: 0, filter: 'blur(8px)', y: -20, scale: 0.98 },
+                        {
+                            opacity: 1,
+                            filter: 'blur(0px)',
+                            y: 0,
+                            scale: 1,
+                            duration: 0.35,
+                            ease: easeMain,
+                            onComplete: function () { try { modal.style.visibility = ''; } catch (e) { } }
+                        }
+                    );
+                } catch (e) { }
+            }
+
+            if (!button || !isUsableOriginElement(button)) {
+                fallbackOpen()
                 return
             }
 
-            if (isMobile) {
-                gsap.set([content, closeBtn], { opacity: 0 })
-                gsap.set(modal, { opacity: 1 })
-            } else {
-                gsap.set([content, closeBtn], { opacity: 1 })
+            const originElement = button
+            const flipId = 'flip-animate'
+            try { originElement.setAttribute('data-flip-id', flipId); } catch (e) { }
+            try { container.setAttribute('data-flip-id', flipId); } catch (e) { }
+            try { content.setAttribute('data-flip-id', flipId); } catch (e) { }
+
+            const originElementState = Flip.getState(originElement)
+            const originElementProps = {
+                borderRadius: window.getComputedStyle(originElement).borderRadius,
+                background: window.getComputedStyle(originElement).background,
+                boxShadow: window.getComputedStyle(originElement).boxShadow,
             }
 
-            gsap.set(backdrop, { clearProps: 'all', opacity: 0 })
+            const bounds = originElementState.elementStates[0].bounds
+            const modalRect = modal.getBoundingClientRect()
+            const modalCS = window.getComputedStyle(modal)
+            const padTop = parseFloat(modalCS.paddingTop) || 0
+            const padLeft = parseFloat(modalCS.paddingLeft) || 0
 
-            const originProps = {
-                borderRadius: window.getComputedStyle(button).borderRadius,
-                background: window.getComputedStyle(button).background,
-                boxShadow: window.getComputedStyle(button).boxShadow,
-            }
-
-            if (isMobile) {
-                gsap.set(container, { clearProps: 'all' })
-
-                const tl = animateFullscreenOpenFromRect({
-                    container,
-                    originEl: button,
-                    backdrop,
-                    originProps,
-                })
-
-                tl.to([content, closeBtn], {
-                    opacity: 1,
-                    duration: 0.2,
-                    ease: 'power2.out',
-                }, 0.12)
-
-                return
-            }
-
-            Flip.fit(container, button, {
-                scale: true,
-                absolute: true
+            Object.assign(container.style, {
+                position: 'absolute',
+                borderRadius: originElementProps.borderRadius,
+                background: originElementProps.background,
+                boxShadow: originElementProps.boxShadow,
+                width: originElement.offsetWidth + 'px',
+                height: originElement.offsetHeight + 'px',
+                top: (bounds.top - modalRect.top - padTop) + 'px',
+                left: (bounds.left - modalRect.left - padLeft) + 'px',
             })
 
-            const state = Flip.getState(container)
-            gsap.set(container, { clearProps: 'all' })
+            const modalWindowContainerState = Flip.getState(originElement)
 
-            Flip.from(state, {
-                targets: container,
-                duration: 0.7,
-                ease: easeMain,
-                scale: true,
-                absolute: false,
-                onStart() {
-                if (backdrop) {
-                    gsap.fromTo(backdrop, 
-                        { opacity: 0 }, 
-                        { opacity: 1, duration: 0.4, ease: 'power2.out' }
-                    );
-                }
-                    gsap.from(container, {
-                        opacity: 0,
+            container.removeAttribute('style')
+            Object.assign(container.style, {
+                background: originElementProps.background,
+                borderRadius: originElementProps.borderRadius,
+                boxShadow: originElementProps.boxShadow,
+            })
+
+            void container.offsetWidth
+
+            requestAnimationFrame(function () {
+                try {
+                    const modalWindowState = Flip.getState(content)
+
+                    Object.assign(container.style, {
+                        width: modalWindowState.elementStates[0].bounds.width + 'px',
+                        height: modalWindowState.elementStates[0].bounds.height + 'px',
+                        background: 'white',
+                        borderRadius: '1.5rem',
+                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                    })
+
+                    Object.assign(content.style, {
+                        minWidth: modalWindowState.elementStates[0].bounds.width + 'px',
+                        minHeight: modalWindowState.elementStates[0].bounds.height + 'px',
+                    })
+
+                    void container.offsetWidth
+
+                    Flip.from(modalWindowContainerState, {
+                        targets: container,
                         duration: 0.7,
-                        filter: 'none',
+                        scale: false,
+                        absolute: false,
                         ease: easeMain,
+                        onStart: function () {
+                            try { modal.style.visibility = 'visible'; } catch (e) { }
+                            gsap.set(modal, { opacity: 1 })
+
+                            if (backdrop) {
+                                gsap.fromTo(backdrop, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' })
+                            }
+
+                            if (isMobile) {
+                                const otherProps = {
+                                    background: originElementProps.background,
+                                    boxShadow: originElementProps.boxShadow,
+                                }
+                                gsap.from(container, {
+                                    duration: 0.3,
+                                    ease: easeMain,
+                                    ...otherProps
+                                })
+                                gsap.fromTo(container,
+                                    { borderRadius: originElementProps.borderRadius },
+                                    {
+                                        borderRadius: '1.5rem',
+                                        duration: 0.5,
+                                        ease: 'power2.inOut'
+                                    }
+                                )
+                            } else {
+                                gsap.from(container, {
+                                    duration: 0.3,
+                                    ease: easeMain,
+                                    ...originElementProps
+                                })
+                            }
+                        },
                     })
-                    gsap.from(container, {
-                        duration: 0.3,
+
+                    Flip.from(originElementState, {
+                        targets: content,
+                        duration: 0.7,
                         ease: easeMain,
-                        ...originProps,
+                        scale: true,
+                        absolute: false,
+                        onStart: function () {
+                            gsap.set(modal, { opacity: 1 })
+                            gsap.from(content, {
+                                opacity: 0,
+                                duration: 0.7,
+                                filter: 'blur(8px)',
+                                ease: easeMain
+                            })
+                            if (closeBtn) {
+                                gsap.from(closeBtn, {
+                                    opacity: 0,
+                                    duration: 0.7,
+                                    ease: easeMain
+                                })
+                            }
+                        },
+                        onComplete: function () {
+                            try { gsap.set(container, { clearProps: 'all' }); } catch (e) { }
+                            try { gsap.set(content, { clearProps: 'all' }); } catch (e) { }
+                            if (backdrop) { try { gsap.set(backdrop, { clearProps: 'all' }); } catch (e) { } }
+                            try { modal.style.visibility = ''; } catch (e) { }
+                        }
                     })
-                },
+                } catch (e) {
+                    fallbackOpen()
+                }
             })
         }
 
@@ -874,73 +946,112 @@
             const modal = document.getElementById('accountModal')
             const container = modal.querySelector('.modal-container')
             const backdrop = modal.querySelector('.modal-backdrop')
-            const button = accountOriginEl || document.getElementById('accountBtn')
             const content = modal.querySelector('.modal-content')
             const closeBtn = modal.querySelector('.modal-close-btn')
 
+            const button = accountOriginEl || document.getElementById('accountBtn')
+
             const isMobile = window.matchMedia('(max-width: 768px)').matches
 
-            if (!__hasGsap || !container || !button) {
+            if (!container || !content || !__hasGsap) {
                 modal.classList.remove('active')
                 accountOriginEl = null
                 return
             }
 
-            if (isMobile) {
-                gsap.to([content, closeBtn], { opacity: 0, duration: 0.1 })
-                gsap.set(modal, { opacity: 1 })
-                animateFullscreenCloseToRect({
-                    modal,
-                    container,
-                    originEl: button,
-                    backdrop,
-                })
+            try { gsap.registerPlugin(Flip, CustomEase); } catch (e) { }
+
+            try { gsap.killTweensOf(modal); } catch (e) { }
+            try { gsap.killTweensOf(container); } catch (e) { }
+            try { gsap.killTweensOf(content); } catch (e) { }
+            if (backdrop) { try { gsap.killTweensOf(backdrop); } catch (e) { } }
+            if (closeBtn) { try { gsap.killTweensOf(closeBtn); } catch (e) { } }
+
+            function finishClose() {
+                modal.classList.remove('active')
+                try { modal.style.visibility = ''; } catch (e) { }
+                try { gsap.set(modal, { clearProps: 'all' }); } catch (e) { }
+                accountOriginEl = null
+            }
+
+            function fallbackClose() {
+                if (backdrop) {
+                    try { gsap.to(backdrop, { opacity: 0, duration: 0.2, ease: 'power2.in' }); } catch (e) { }
+                }
+                try {
+                    gsap.to(content, {
+                        opacity: 0,
+                        filter: 'blur(8px)',
+                        scale: 0.98,
+                        duration: 0.25,
+                        ease: easeMain,
+                        onComplete: finishClose,
+                    });
+                } catch (e) {
+                    finishClose()
+                }
+            }
+
+            if (!button || !isUsableOriginElement(button)) {
+                fallbackClose()
                 return
             }
 
-            gsap.to([content, closeBtn], { opacity: 0, duration: 0.1 })
+            const flipState = Flip.getState(button)
 
-            const state = Flip.getState(container)
+            if (closeBtn) {
+                try { gsap.set(closeBtn, { opacity: 0 }); } catch (e) { }
+            }
 
-            Flip.fit(container, button, {
-                scale: true,
-                absolute: true
-            })  
-
-            Flip.from(state, {
+            Flip.to(flipState, {
                 targets: container,
                 duration: 0.5,
                 ease: easeMain,
                 scale: true,
                 absolute: false,
-                onStart() {
-                    gsap.to(container, {
+                onStart: function () {
+                    gsap.to(content, {
                         duration: 0.5,
                         ease: closeEase1,
                         borderRadius: '400px',
                     })
-                    gsap.to(container, {
+                    gsap.to(content, {
                         duration: 0.5,
                         ease: closeEase2,
+                        filter: 'none',
                     })
-                    gsap.to(container, {
+                    gsap.to(content, {
                         opacity: 0,
                         duration: 0.5,
                         ease: closeEase1,
                     })
-
+                    gsap.to(container, {
+                        opacity: 0,
+                        duration: 0.4,
+                        ease: closeEase1,
+                    })
                     gsap.to(backdrop, {
                         opacity: 0,
                         duration: 0.3,
                         ease: 'power2.in',
                     })
                 },
-                onComplete() {
-                    modal.classList.remove('active')
-                    gsap.set(container, { clearProps: 'all' })
-                    gsap.set(backdrop, { clearProps: 'all' })
-                    accountOriginEl = null
+                onComplete: function () {
+                    try { button.removeAttribute('data-flip-id'); } catch (e) { }
+                    try { content.removeAttribute('data-flip-id'); } catch (e) { }
+                    try { container.removeAttribute('data-flip-id'); } catch (e) { }
+                    try { gsap.set(container, { clearProps: 'all' }); } catch (e) { }
+                    try { gsap.set(content, { clearProps: 'all' }); } catch (e) { }
+                    if (backdrop) { try { gsap.set(backdrop, { clearProps: 'all' }); } catch (e) { } }
+                    if (closeBtn) { try { gsap.set(closeBtn, { clearProps: 'all' }); } catch (e) { } }
+                    finishClose()
                 }
+            })
+
+            gsap.to(modal, {
+                opacity: 0,
+                duration: 0.3,
+                ease: 'power2.in',
             })
         }
 

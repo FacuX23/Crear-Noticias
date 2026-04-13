@@ -21,6 +21,17 @@
         void el.getBoundingClientRect();
     }
 
+    function isUsableOriginElement(el) {
+        if (!el || !el.getBoundingClientRect) return false;
+        var cs;
+        try { cs = window.getComputedStyle(el); } catch (e) { cs = null; }
+        if (cs && (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0')) return false;
+        var r;
+        try { r = el.getBoundingClientRect(); } catch (e2) { r = null; }
+        if (!r) return false;
+        return (r.width > 2 && r.height > 2);
+    }
+
     function getOriginProps(originEl) {
         if (!originEl) return null;
         var cs = window.getComputedStyle(originEl);
@@ -39,137 +50,207 @@
         var backdrop = modal.querySelector('.login-backdrop');
         var card = modal.querySelector('.login-card');
 
-        if (!container) {
+        modal.__loginOriginEl = originEl || modal.__loginOriginEl || null;
+        if (modal.__loginOriginEl && !isUsableOriginElement(modal.__loginOriginEl)) {
+            modal.__loginOriginEl = null;
+        }
+
+        if (!container || !card) {
             modal.classList.add('active');
-            try { modal.style.visibility = ''; } catch (e) {}
+            try { modal.style.visibility = ''; } catch (e) { }
             return;
         }
 
-        modal.classList.add('active');
-        try { modal.style.visibility = 'hidden'; } catch (e) {}
-
-        // Asegurar layout antes de medir/animar
-        forceLayout(modal);
-        forceLayout(container);
-
-        modal.__loginOriginEl = originEl || modal.__loginOriginEl || null;
+        if (!hasGsapCore()) {
+            modal.classList.add('active');
+            try { modal.style.visibility = ''; } catch (e) { }
+            return;
+        }
 
         var gsap = window.gsap;
         var Flip = window.Flip;
         var CustomEase = window.CustomEase;
 
-        if (hasFlip() && container && modal.__loginOriginEl) {
-            try { gsap.registerPlugin(Flip, CustomEase); } catch (e) {}
+        try { gsap.registerPlugin(Flip, CustomEase); } catch (e) { }
 
-            try { gsap.killTweensOf(container); } catch (e) {}
-            if (card) {
-                try { gsap.killTweensOf(card); } catch (e) {}
-            }
+        try { gsap.killTweensOf(modal); } catch (e) { }
+        try { gsap.killTweensOf(container); } catch (e) { }
+        try { gsap.killTweensOf(card); } catch (e) { }
+        if (backdrop) { try { gsap.killTweensOf(backdrop); } catch (e) { } }
+
+        try { gsap.set(container, { clearProps: 'all' }); } catch (e) { }
+        try { gsap.set(card, { clearProps: 'all' }); } catch (e) { }
+        if (backdrop) { try { gsap.set(backdrop, { clearProps: 'all' }); } catch (e) { } }
+        try { container.removeAttribute('data-flip-id'); } catch (e) { }
+        try { card.removeAttribute('data-flip-id'); } catch (e) { }
+
+        try { gsap.set(modal, { opacity: 0 }); } catch (e) { }
+        try { modal.style.visibility = 'hidden'; } catch (e) { }
+
+        modal.classList.add('active');
+        forceLayout(modal);
+        forceLayout(container);
+
+        function fallbackOpen() {
+            var easeMain2 = getEaseMain();
+            try { modal.style.visibility = 'visible'; } catch (e) { }
+            try { gsap.set(modal, { opacity: 1 }); } catch (e) { }
             if (backdrop) {
-                try { gsap.killTweensOf(backdrop); } catch (e) {}
+                try { gsap.set(backdrop, { opacity: 0 }); } catch (e) { }
+                try { gsap.to(backdrop, { opacity: 1, duration: 0.25, ease: 'power2.out' }); } catch (e) { }
             }
-
-            var easeMain = getEaseMain();
-            var target = card || container;
-
-            if (!target) {
-                modal.classList.remove('active');
-                try { modal.style.visibility = ''; } catch (e) {}
-                modal.__loginOriginEl = null;
-                modal.__loginIsClosing = false;
-                return;
-            }
-
-            var originProps = getOriginProps(modal.__loginOriginEl);
-
-            // Evitar flash del estado final mientras se prepara Flip
-            gsap.set(target, { clearProps: 'all', opacity: 1, visibility: 'hidden' });
-            gsap.set(container, { clearProps: 'all' });
-            if (backdrop) gsap.set(backdrop, { clearProps: 'all', opacity: 0 });
-
             try {
- 
-                Flip.fit(container, modal.__loginOriginEl, {
-                    scale: true,
-                    absolute: true
-                });
-                var state = Flip.getState(container);
-                gsap.set(container, { clearProps: 'all' });
+                gsap.fromTo(card,
+                    { opacity: 0, filter: 'none', y: -20, scale: 0.98 },
+                    {
+                        opacity: 1,
+                        filter: 'blur(0px)',
+                        y: 0,
+                        scale: 1,
+                        duration: 0.35,
+                        ease: easeMain2,
+                        onComplete: function () { try { modal.style.visibility = ''; } catch (e) { } }
+                    }
+                );
+            } catch (e) { }
+        }
 
-                Flip.from(state, {
+        if (!hasFlip() || !modal.__loginOriginEl) {
+            fallbackOpen();
+            return;
+        }
+
+        var easeMain = getEaseMain();
+        var originElement = modal.__loginOriginEl;
+        var flipId = 'flip-animate';
+        try { originElement.setAttribute('data-flip-id', flipId); } catch (e) { }
+        try { container.setAttribute('data-flip-id', flipId); } catch (e) { }
+        try { card.setAttribute('data-flip-id', flipId); } catch (e) { }
+
+        var originElementState = Flip.getState(originElement);
+        var originElementProps = modal.__loginOriginProps || getOriginProps(originElement);
+        modal.__loginOriginProps = originElementProps;
+
+        var bounds = originElementState.elementStates[0].bounds;
+        var modalRect;
+        var modalCS;
+        var padTop = 0;
+        var padLeft = 0;
+        try { modalRect = modal.getBoundingClientRect(); } catch (e2) { modalRect = { top: 0, left: 0 }; }
+        try { modalCS = window.getComputedStyle(modal); } catch (e3) { modalCS = null; }
+        if (modalCS) {
+            padTop = parseFloat(modalCS.paddingTop) || 0;
+            padLeft = parseFloat(modalCS.paddingLeft) || 0;
+        }
+
+        Object.assign(container.style, {
+            position: 'absolute',
+            borderRadius: originElementProps.borderRadius,
+            background: originElementProps.background,
+            boxShadow: originElementProps.boxShadow,
+            width: originElement.offsetWidth + 'px',
+            height: originElement.offsetHeight + 'px',
+            top: (bounds.top - (modalRect.top || 0) - padTop) + 'px',
+            left: (bounds.left - (modalRect.left || 0) - padLeft) + 'px',
+        });
+
+        var modalWindowContainerState = Flip.getState(originElement);
+
+        container.removeAttribute('style');
+        Object.assign(container.style, {
+            background: originElementProps.background,
+            borderRadius: originElementProps.borderRadius,
+            boxShadow: originElementProps.boxShadow,
+        });
+
+        forceLayout(container);
+
+        requestAnimationFrame(function () {
+            try {
+                var modalWindowState = Flip.getState(card);
+
+                Object.assign(container.style, {
+                    width: modalWindowState.elementStates[0].bounds.width + 'px',
+                    height: modalWindowState.elementStates[0].bounds.height + 'px',
+                    background: window.getComputedStyle(card).background,
+                    borderRadius: window.getComputedStyle(card).borderRadius,
+                });
+
+                Object.assign(card.style, {
+                    minWidth: modalWindowState.elementStates[0].bounds.width + 'px',
+                    minHeight: modalWindowState.elementStates[0].bounds.height + 'px',
+                });
+
+                forceLayout(container);
+
+                Flip.from(modalWindowContainerState, {
                     targets: container,
+                    duration: 0.7,
+                    scale: false,
+                    absolute: false,
+                    ease: easeMain,
+                    onStart: function () {
+                        try { modal.style.visibility = 'visible'; } catch (e) { }
+                        gsap.set(modal, { opacity: 1 });
+
+                        if (backdrop) {
+                            gsap.fromTo(backdrop, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' });
+                        }
+
+                        if (window.innerWidth < 680) {
+                            var otherProps = {
+                                background: originElementProps.background,
+                                boxShadow: originElementProps.boxShadow,
+                            };
+                            gsap.from(container, {
+                                duration: 0.3,
+                                ease: easeMain,
+                                ...otherProps
+                            });
+                            gsap.fromTo(container,
+                                { borderRadius: originElementProps.borderRadius },
+                                {
+                                    borderRadius: window.getComputedStyle(card).borderRadius,
+                                    duration: 0.5,
+                                    ease: 'power2.inOut'
+                                }
+                            );
+                        } else {
+                            gsap.from(container, {
+                                duration: 0.3,
+                                ease: easeMain,
+                                ...originElementProps
+                            });
+                        }
+                    },
+                });
+
+                Flip.from(originElementState, {
+                    targets: card,
                     duration: 0.7,
                     ease: easeMain,
                     scale: true,
                     absolute: false,
                     onStart: function () {
-                        try { modal.style.visibility = 'visible'; } catch (e) {}
-                        gsap.set(target, { visibility: 'visible' });
-                            // onStart
-                            if (backdrop) {
-                                gsap.fromTo(backdrop, 
-                                    { opacity: 0 }, 
-                                    { opacity: 1, duration: 0.4, ease: 'power2.out' }
-                                );
-                            }
-                        gsap.from(target, {
+                        gsap.set(modal, { opacity: 1 });
+                        gsap.from(card, {
                             opacity: 0,
                             duration: 0.7,
                             filter: 'none',
                             ease: easeMain
                         });
-                        if (originProps) {
-                            gsap.from(target, {
-                                duration: 0.3,
-                                ease: easeMain,
-                                borderRadius: originProps.borderRadius,
-                                background: originProps.background,
-                                boxShadow: originProps.boxShadow,
-                            });
-                        }
-                        if (backdrop) {
-                            gsap.to(backdrop, { opacity: 1, duration: 0.3, ease: 'power2.out' });
-                        }
                     },
                     onComplete: function () {
-                        // Dejar el modal limpio para próximas aperturas
-                        try { gsap.set(container, { clearProps: 'all' }); } catch (e) {}
-                        if (backdrop) {
-                            try { gsap.set(backdrop, { clearProps: 'all' }); } catch (e) {}
-                        }
-                        if (card) {
-                            try { gsap.set(card, { clearProps: 'all' }); } catch (e) {}
-                        }
-                        try { modal.style.visibility = ''; } catch (e) {}
+                        try { gsap.set(container, { clearProps: 'all' }); } catch (e) { }
+                        try { gsap.set(card, { clearProps: 'all' }); } catch (e) { }
+                        if (backdrop) { try { gsap.set(backdrop, { clearProps: 'all' }); } catch (e) { } }
+                        try { modal.style.visibility = ''; } catch (e) { }
                     }
                 });
             } catch (e) {
-                try { modal.style.visibility = 'visible'; } catch (e2) {}
-                if (hasGsapCore()) {
-                    var easeFallback = getEaseMain();
-                    var t = card || container;
-                    try { window.gsap.set(t, { opacity: 0, scale: 0.96, filter: 'none' }); } catch (e3) {}
-                    try { window.gsap.to(t, { opacity: 1, scale: 1, filter: 'none', duration: 0.35, ease: easeFallback }); } catch (e4) {}
-                }
+                fallbackOpen();
             }
-
-            return;
-        }
-
-        // Fallback GSAP (sin Flip)
-        if (hasGsapCore() && container) {
-            var easeMain2 = getEaseMain();
-            var target2 = card || container;
-            try { gsap.killTweensOf(target2); } catch (e) {}
-            if (backdrop) {
-                try { gsap.killTweensOf(backdrop); } catch (e) {}
-                gsap.set(backdrop, { opacity: 0 });
-                gsap.to(backdrop, { opacity: 1, duration: 0.25, ease: 'power2.out' });
-            }
-            try { modal.style.visibility = 'visible'; } catch (e) {}
-            gsap.set(target2, { opacity: 0, y: -20, scale: 0.98, filter: 'none' });
-            gsap.to(target2, { opacity: 1, y: 0, scale: 1, filter: 'none', duration: 0.35, ease: easeMain2 });
-        }
+        });
     }
 
     function animateClose(originEl) {
@@ -183,122 +264,113 @@
         var backdrop = modal.querySelector('.login-backdrop');
         var card = modal.querySelector('.login-card');
 
-        if (!container) {
-            modal.classList.remove('active');
-            try { modal.style.visibility = ''; } catch (e) {}
+        modal.__loginOriginEl = originEl || modal.__loginOriginEl || null;
+        if (modal.__loginOriginEl && !isUsableOriginElement(modal.__loginOriginEl)) {
             modal.__loginOriginEl = null;
+        }
+
+        if (!container || !card || !hasGsapCore()) {
+            modal.classList.remove('active');
+            try { modal.style.visibility = ''; } catch (e) { }
+            modal.__loginOriginEl = null;
+            modal.__loginOriginProps = null;
             modal.__loginIsClosing = false;
             return;
         }
-
-        modal.__loginOriginEl = originEl || modal.__loginOriginEl || null;
 
         var gsap = window.gsap;
         var Flip = window.Flip;
         var CustomEase = window.CustomEase;
 
-        if (hasFlip() && container && modal.__loginOriginEl) {
-            try { gsap.registerPlugin(Flip, CustomEase); } catch (e) {}
+        try { gsap.registerPlugin(Flip, CustomEase); } catch (e) { }
 
-            try { gsap.killTweensOf(container); } catch (e) {}
-            if (card) {
-                try { gsap.killTweensOf(card); } catch (e) {}
-            }
+        try { gsap.killTweensOf(modal); } catch (e) { }
+        try { gsap.killTweensOf(container); } catch (e) { }
+        try { gsap.killTweensOf(card); } catch (e) { }
+        if (backdrop) { try { gsap.killTweensOf(backdrop); } catch (e) { } }
+
+        function finishClose() {
+            modal.classList.remove('active');
+            try { modal.style.visibility = ''; } catch (e) { }
+            try { gsap.set(modal, { clearProps: 'all' }); } catch (e) { }
+            modal.__loginOriginEl = null;
+            modal.__loginOriginProps = null;
+            modal.__loginIsClosing = false;
+        }
+
+        function fallbackClose() {
             if (backdrop) {
-                try { gsap.killTweensOf(backdrop); } catch (e) {}
+                try { gsap.to(backdrop, { opacity: 0, duration: 0.2, ease: 'power2.in' }); } catch (e) { }
             }
-
-            var easeMain = getEaseMain();
-            var target = card || container;
-
-            // Asegurar visible por si quedó oculto por la preparación
-            try { gsap.set(target, { visibility: 'visible' }); } catch (e) {}
-
             try {
-                var state = Flip.getState(container);
-                Flip.fit(container, modal.__loginOriginEl, { scale: true, absolute: true });
-
-                Flip.from(state, {
-                    targets: container,
-                    duration: 0.5,
-                    ease: easeMain,
-                    scale: true,
-                    absolute: false,
-                    onStart: function () {
-                        if (backdrop) gsap.to(backdrop, { opacity: 0, duration: 0.25, ease: 'power2.in' });
-                        gsap.to(target, { opacity: 0, duration: 0.5, ease: easeMain });
-                    },
-                    onComplete: function () {
-                        modal.classList.remove('active');
-                        try { gsap.set(container, { clearProps: 'all' }); } catch (e) {}
-                        if (backdrop) {
-                            try { gsap.set(backdrop, { clearProps: 'all' }); } catch (e) {}
-                        }
-                        if (card) {
-                            try { gsap.set(card, { clearProps: 'all' }); } catch (e) {}
-                        }
-                        try { modal.style.visibility = ''; } catch (e) {}
-                        modal.__loginOriginEl = null;
-                        modal.__loginIsClosing = false;
-                    }
+                gsap.to(card, {
+                    opacity: 0,
+                    filter: 'none',
+                    scale: 0.98,
+                    duration: 0.25,
+                    ease: getEaseMain(),
+                    onComplete: finishClose,
                 });
             } catch (e) {
-                if (backdrop) {
-                    try { gsap.to(backdrop, { opacity: 0, duration: 0.2, ease: 'power2.in' }); } catch (e2) {}
-                }
-                try {
-                    gsap.to(target, {
-                        opacity: 0,
-                        scale: 0.96,
-                        filter: 'none',
-                        duration: 0.25,
-                        ease: easeMain,
-                        onComplete: function () {
-                            modal.classList.remove('active');
-                            try { modal.style.visibility = ''; } catch (e3) {}
-                            modal.__loginOriginEl = null;
-                            modal.__loginIsClosing = false;
-                        }
-                    });
-                } catch (e4) {
-                    modal.classList.remove('active');
-                    try { modal.style.visibility = ''; } catch (e5) {}
-                    modal.__loginOriginEl = null;
-                    modal.__loginIsClosing = false;
-                }
+                finishClose();
             }
+        }
 
+        if (!hasFlip() || !modal.__loginOriginEl) {
+            fallbackClose();
             return;
         }
 
-        if (hasGsapCore() && container) {
-            var easeMain2 = getEaseMain();
-            var target2 = card || container;
-            if (backdrop) {
-                try { gsap.killTweensOf(backdrop); } catch (e) {}
-                gsap.to(backdrop, { opacity: 0, duration: 0.2, ease: 'power2.in' });
-            }
-            gsap.to(target2, {
-                opacity: 0,
-                y: -20,
-                scale: 0.98,
-                filter: 'none',
-                duration: 0.25,
-                ease: easeMain2,
-                onComplete: function () {
-                    modal.classList.remove('active');
-                    try { modal.style.visibility = ''; } catch (e) {}
-                    modal.__loginOriginEl = null;
-                    modal.__loginIsClosing = false;
-                }
-            });
-            return;
-        }
+        var easeMain = getEaseMain();
+        var originElement = modal.__loginOriginEl;
+        var flipState = Flip.getState(originElement);
 
-        modal.classList.remove('active');
-        try { modal.style.visibility = ''; } catch (e) {}
-        modal.__loginOriginEl = null;
-        modal.__loginIsClosing = false;
+        Flip.to(flipState, {
+            targets: card,
+            duration: 0.5,
+            ease: easeMain,
+            scale: true,
+            absolute: false,
+            onStart: function () {
+                gsap.to(card, {
+                    duration: 0.5,
+                    ease: CustomEase ? CustomEase.create("easeName", ".56,.27,0,1") : 'power2.in',
+                    borderRadius: '8px',
+                });
+                gsap.to(card, {
+                    duration: 0.5,
+                    ease: CustomEase ? CustomEase.create("easeName", ".37,.35,0,1") : 'power2.in',
+                    filter: 'blur(8px)',
+                });
+                gsap.to(card, {
+                    opacity: 0,
+                    duration: 0.4,
+                    ease: CustomEase ? CustomEase.create("easeName", ".56,.27,0,1") : 'power2.in',
+                });
+            },
+            onComplete: function () {
+                try { originElement.removeAttribute('data-flip-id'); } catch (e) { }
+                try { card.removeAttribute('data-flip-id'); } catch (e) { }
+                try { container.removeAttribute('data-flip-id'); } catch (e) { }
+                try { gsap.set(container, { clearProps: 'all' }); } catch (e) { }
+                try { gsap.set(card, { clearProps: 'all' }); } catch (e) { }
+                if (backdrop) { try { gsap.set(backdrop, { clearProps: 'all' }); } catch (e) { } }
+                finishClose();
+            }
+        });
+
+        gsap.to(container, {
+            background: 'transparent',
+            border: 'none',
+            boxShadow: 'none',
+            duration: 0,
+        });
+
+        gsap.to(modal, {
+            opacity: 0,
+            duration: 0.3,
+            ease: 'power2.in',
+        });
     }
 
     window.loginModalAnim = {
@@ -306,3 +378,4 @@
         close: animateClose
     };
 })();
+

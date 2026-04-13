@@ -1670,7 +1670,7 @@ function updateFormUI() {
             removeBtn.style.right = '8px';
             removeBtn.style.width = '32px';
             removeBtn.style.height = '32px';
-            removeBtn.style.borderRadius = '999px';
+            removeBtn.style.borderRadius = '12px';
             removeBtn.style.border = 'none';
             removeBtn.style.cursor = 'pointer';
             removeBtn.style.background = 'rgba(0,0,0,0.6)';
@@ -1911,7 +1911,7 @@ function closeFormAnimated(done) {
         gsap.to(modalContainer, {
             duration: 0.5,
             ease: closeEase1,
-            borderRadius: '400px',
+            borderRadius: '12px',
         });
         gsap.to(modalContainer, {
             duration: 0.5,
@@ -1968,7 +1968,7 @@ function closeFormAnimated(done) {
                 gsap.to(modalContainer, {
                     duration: 0.5,
                     ease: closeEase1,
-                    borderRadius: '400px',
+                    borderRadius: '12px',
                 });
                 gsap.to(modalContainer, {
                     duration: 0.5,
@@ -2356,7 +2356,7 @@ function positionDeleteModalNearOrigin(container, originEl) {
     if (!container || !originEl) return;
     const rect = originEl.getBoundingClientRect();
 
-    container.style.position = 'fixed';
+    container.style.position = 'absolute';
     container.style.transform = 'none';
 
     const margin = 12;
@@ -2461,7 +2461,7 @@ function closeDeleteModal(done) {
                 gsap.to(container, {
                     duration: 0.5,
                     ease: closeEase1,
-                    borderRadius: '400px',
+                    borderRadius: '12px',
                 });
                 gsap.to(container, {
                     duration: 0.5,
