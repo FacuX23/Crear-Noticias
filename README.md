@@ -32,7 +32,7 @@ Escuela Crear es un sistema web completo que permite gestionar y mostrar noticia
 - **Gestión de usuarios** con roles y permisos
 - **Modales de confirmación** con posicionamiento inteligente
 - **Interfaz moderna** con componentes reutilizables
-- **Sistema de notificaciones** toast integrado
+- **Sistema de notificaciones** toast integrado (Sileo)
 
 ## 🛠️ Tecnologías Utilizadas
 
