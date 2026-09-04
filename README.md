@@ -58,12 +58,6 @@ El proyecto está optimizado para:
 - **Tablet** (768px-1023px) - Adaptación intermedia
 - **Mobile** (<768px) - Navegación inferior fija y experiencia táctil optimizada
 
-3. **Abrir en navegador**
-- Página principal: `http://localhost/Crear-Noticias/`
-- Panel: `http://localhost/Crear-Noticias/Panel/`
-- Noticias: `http://localhost/Crear-Noticias/Noticias/`
-- Eventos: `http://localhost/Crear-Noticias/Eventos/`
-
 ## 📁 Estructura del Proyecto
 
 ```
