@@ -109,14 +109,6 @@ Crear-Noticias/
 - **Prevención de scroll** sin saltos de página
 - **Focus management** para accesibilidad
 
-## 🤝 Contribución
-
-1. Fork del proyecto
-2. Crear feature branch (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit de cambios (`git commit -m 'Agregando nueva funcionalidad'`)
-4. Push al branch (`git push origin feature/nueva-funcionalidad`)
-5. Abrir Pull Request
-
 ## 👨‍💻 Autor
 
 **[Facundo Brites]** - *Desarrollador Web* - [GitHub Profile](https://github.com/FacuX23)
