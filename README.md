@@ -58,21 +58,6 @@ El proyecto está optimizado para:
 - **Tablet** (768px-1023px) - Adaptación intermedia
 - **Mobile** (<768px) - Navegación inferior fija y experiencia táctil optimizada
 
-## 🚀 Instalación y Uso
-
-1. **Clonar el repositorio**
-```bash
-git clone https://github.com/FacuX23/Crear-Noticias
-cd Crear-Noticias
-```
-
-2. **Configurar servidor local**
-```bash
-# Usando XAMPP/MAMP/WAMP
-# Colocar la carpeta en htdocs/
-# Acceder via http://localhost/Crear-Noticias/
-```
-
 3. **Abrir en navegador**
 - Página principal: `http://localhost/Crear-Noticias/`
 - Panel: `http://localhost/Crear-Noticias/Panel/`
